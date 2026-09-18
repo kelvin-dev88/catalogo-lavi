@@ -751,7 +751,7 @@
   main{ max-width:1080px; margin:0 auto; padding: 40px 20px 90px; }
   .grid{
     display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 44px 28px;
   }
   .card{
@@ -1125,7 +1125,7 @@
           : '';
 
         const estiloFoto = p.foto
-          ? `background-image:url('${p.foto}');background-size:contain;background-positio:center;background-repeat:no-repeat;`
+          ? `background-image:url('${p.foto}');background-size:cover;background-positio:center;background-repeat:no-repeat;`
           : '';
 
         card.innerHTML = `
