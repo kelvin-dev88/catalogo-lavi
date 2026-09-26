@@ -604,6 +604,27 @@
     border-radius:6px 6px 0 0;
   }
   .modal-media .oval-label{ width:66%; }
+  .modal-photo-prev ,  
+  .modal-photo-next{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.85);
+    color: #3a2e1f;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+  }
+  .modal-photo-prev{ left: 12px;}
+  .modal-photo-next{right: 12px;}
 
   .modal-body{ padding:26px 26px 30px; }
   .modal-cat{
@@ -964,6 +985,25 @@
     .wpp-btn{ width:100%; min-width:0; padding:9px 6px; font-size:9.5px; }
 
   }
+
+  /* Galeria discreta, exibida somente quando o produto tem mais de uma foto. */
+  .photo-arrow, .modal-photo-prev, .modal-photo-next{
+    position:absolute; top:50%; transform:translateY(-50%); z-index:4;
+    width:32px; height:32px; border:1px solid rgba(80,61,40,.12);
+    border-radius:50%; background:rgba(255,255,255,.87); color:#493925;
+    font-size:23px; line-height:1; cursor:pointer;
+    box-shadow:0 2px 10px rgba(0,0,0,.09);
+  }
+  .photo-prev{left:10px} .photo-next{right:10px}
+  .photo-hint, .photo-count{
+    position:absolute; bottom:11px; z-index:3; padding:5px 8px;
+    border-radius:15px; background:rgba(255,255,255,.85);
+    font:10px/1.2 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    color:#493925; pointer-events:none;
+  }
+  .photo-hint{left:10px} .photo-count{right:10px}
+  .modal-photo-hint{left:50%;transform:translateX(-50%);white-space:nowrap}
+  .photo-arrow[hidden], .modal-photo-prev[hidden], .modal-photo-next[hidden], .photo-hint[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -1004,6 +1044,10 @@
   <span class="filter-group-label">Brand Collection</span>
   <button class="filter-btn filter-btn-sub" data-cat="brand-feminina">Feminino</button>
   <button class="filter-btn filter-btn-sub" data-cat="brand-masculina">Masculino</button>
+
+  <span class="filter-group-label">Body Lotion</span>
+  <button class="filter-btn filter-btn-sub" data-cat="body-feminina">Feminino</button>
+  <button class="filter-btn filter-btn-sub" data-cat="body-masculina">Masculino</button>
 
   <button class="filter-btn" data-cat="importados">Importados</button>
 </nav>
@@ -1047,6 +1091,9 @@
   <div class="modal-box">
     <button class="modal-close" id="modalClose" aria-label="Fechar">✕</button>
     <div class="modal-media" id="modalMedia">
+      <button class="modal-photo-prev" id="modalPhotoPrev" type="button" aria-label="Foto anterior" hidden>‹</button>
+      <button class="modal-photo-next" id="modalPhotoNext" type="button" aria-label="Próxima foto" hidden>›</button>
+      <span class="photo-hint modal-photo-hint" id="modalPhotoHint" hidden>Deslize para ver mais fotos</span>
       <div class="oval-label" id="modalOvalLabel">
         <span class="cat" id="modalCat"></span>
         <p class="nome" id="modalNomeMini"></p>
@@ -1107,6 +1154,8 @@
     'arabes':'Árabes',
     'brand-feminina':'Brand Collection · Feminino',
     'brand-masculina':'Brand Collection · Masculino',
+    'body-feminina':'Body Lotion · Feminino',
+    'body-masculina':'Body Lotion · Masculino',
     'importados':'Importados'
   };
 
@@ -1114,44 +1163,123 @@
     'arabes':'Árabes',
     'brand-feminina':'Feminino',
     'brand-masculina':'Masculino',
+    'body-feminina':'Body Lotion · Feminino',
+    'body-masculina':'Body Lotion · Masculino',
     'importados':'Importados'
   };
 
   const produtos = [
-    { nome:"Club de Nuit Man", cat:"importados", novidade:true, ml:"105ml", preco:389.90, desc:"Pertence à família amadeirada frutada, com uma saída cítrica vibrante que evolui para um corpo mais seco, intenso e estruturado, apoiado por madeiras, musk e notas terrosas. Uma fragrância de personalidade sofisticada e assertiva.", estoque:"disponivel", foto:"fotos/clubdenuitman.jpeg" },
-    { nome:"La Voie", cat:"importados", novidade:false, ml:"100ml", preco:389.90, desc:"Elegância em sua forma mais marcante. Sofisticado e envolvente. Um floral amadeirado almiscarado que reúne a luminosidade da pera e da bergamota à sofisticação das flores brancas, finalizando com uma base cremosa de baunilha, musk, patchouli e sândalo.", estoque:"disponível", foto:"fotos/lavoie.jpeg" },
-    { nome:"Club de Nuit Woman", cat:"importados", novidade:true, ml:"105ml", preco:389.90, desc:"Transita entre o floral frutado e o amadeirado, combinando uma abertura luminosa e cítrica a um coração floral mais sofisticado, finalizado por madeiras, patchouli, baunilha e musk, uma fragrância para quem prefere uma presença delicada na medida, mas longe de passar despercebida.", estoque:"disponivel", foto:"fotos/clubdenuitwoman.jpg" },
-    { nome:"Wanted", cat:"arabes", novidade:false, ml:"100ml", preco:389.90, desc:"Amadeirado intenso, para quem é intenso.", estoque:"disponivel", foto:"" },
-    { nome:"Rouh", cat:"importados", novidade:false, ml:"100ml", preco:389.90, desc:"Composição rica e envolvente, com fundo amadeirado.", estoque:"disponivel", foto:"" },
-    { nome:"Eqaab", cat:"arabes", novidade:false, ml:"100ml", preco:389.90, desc:"Especiado e marcante, com notas orientais.", estoque:"disponivel", foto:"" },
-    { nome:"Brand Collection 007 - Dior J'adore" , cat: "brand-feminina" , novidade:false, ml:"25ml", preco: 99.99, desc: "O Perfume Feminino Brand Collection 007 é totalmente inspirado em J'adore de Dior, com aromas que expressam sedução e sensualidade com uma delicadeza indescritível. Simplesmente luxuoso e com cheirinho de deusa!", estoque: "disponivel", foto:"fotos/brand_jadore_dior.jpg" } ,
-    { nome:"Brand Collection 015 - Lancôme Idôle" , cat: "brand-feminina" , novidade:false, ml:"25ml", preco: 99.99 , desc:"Um floral fresco, moderno, elegante e com pegada clean." , estoque: "disponivel", foto: "fotos/brand015idole.jpg" } ,
-    { nome:"Brand Collection 021 - Chanel Coco Mademoiselle" , cat: "brand-feminina" , novidade:false, ml: "25ml", preco:99.99, desc: "É uma fragrância floral âmbar que foi criada como uma ode à confiança, sensualidade e exclusividade. Esta composição moderna é inspirada na jovem audaciosa. Portanto. A composição destaca uma mulher de estilo único e despreocupado, com um toque de travessura." , estoque:"disponivel" , foto: "fotos/brand021coco.jpeg" } ,
-    { nome:"Brand Collection 039 - Chanel Chance" , cat: "brand-feminina" , novidade:false , ml:"25ml" , preco: 99.99 , desc: "É uma fragrância da família olfativa Chipre Floral, caracterizada por um toque elegante, equilibrado entre o frescor especiado e um fundo levemente atalcado e cremoso." , estoque: "disponivel" , foto: "fotos/brand039.jpeg" } ,
-    { nome:"Brand Collection 059 - Valentino Valentina Assoluto", cat: "brand-feminina" , novidade:false , ml:"25ml" , preco:99.99, desc: "É uma fragrância sofisticada, intensa e profundamente sedutora. Inspirada no renomado Valentina Assoluto de Valentino, este perfume é uma verdadeira obra-prima floral oriental, feita para a mulher moderna que exala mistério, elegância e magnetismo." , estoque: "disponivel", foto: "fotos/brand059.jpeg" } ,
-    { nome:"Brand Collection 063 - Giorgio Armani Sí", cat: "brand-feminina" , novidade: false , ml:"25ml" , preco: 99.99 , desc: "Uma fragrância para a mulher decidida e com atitude. Uma mulher que é autora da própria vida, que não tem medo de dizer sim à felicidade, ao amor e à vida!" , estoque: "disponivel" , foto: "fotos/brand063.jpeg" } , 
-    { nome:"Brand Collection 076 - Lancôme La Vie Est Belle" , cat :"brand-feminina" , novidade: false , ml:"25ml" , preco: 99.99 , desc: "É uma fragrância sofisticada e luminosa, pertencente à família Floral Frutado Gourmand. Com uma combinação equilibrada de notas frutadas, flores intensas e um toque adocicado, este perfume encanta pelo seu rastro marcante e refinado, ideal para ocasiões especiais." , estoque: "disponivel" , foto : "fotos/brand076.jpeg" } , 
-    { nome:"Brand Collection 087 - Paco Rabanne Olympéa" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco: 99.99 , desc: "Uma fragrância feminina delicada, elegante e envolvente, perfeita para quem ama perfumes com aquele toque sofisticado e marcante." , estoque : "disponivel" , foto: "fotos/brand087.jpeg" } ,
-    { nome:"Brand Collection 136 - Jean Paul Gaultier Scandal " , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 99.99 , desc: "A abertura dessa fragrância é uma verdadeira explosão de frescor. Notas de bergamota e tangerina dançam em harmonia, trazendo uma sensação revigorante e vibrante." , estoque : "disponivel" , foto: "fotos/brand136.jpeg" } , 
-    { nome:"Brand Collection 151 - Parfums de Marly Delina" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 99.99 , desc: "Seus aromas transmitem a presença da realeza. Possui abertura em essências frutadas, exalando delicadeza, feminilidade e sensualidade. Com certeza, será este perfume que te diferenciará de todos e todas!" , estoque : " disponivel" , foto: "fotos/brand151.jpeg" } , 
-    { nome:"Brand Collection 163 - Lancôme Hypnôse" , cat: "brand-feminina" , novidades:false , ml: "25ml" ,preco: 99.99 , desc: "É um perfume Âmbar Baunilha Feminino, tem suas notas inspiradas na casa de Lancôme mantendo a alta qualidade, fixação e projeção." , estoque: "disponivel" , foto: "fotos/brand163.2.jpeg" } , 
-    { nome:"Brand Collection 341 - Chloé Nomade" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 99.99 , desc: "As facetas deste chipre floral sopram como os ventos da liberdade, exalando autenticidade, contemporaneidade e autoconfiança. As notas intensas e minerais do musgo de carvalho são envolvidas pela delicadeza e sensualidade da flor de cerejeira e pelo frescor floral da frésia." , estoque: "disponivel" , foto: "fotos/brand341.jpeg" } , 
-    { nome:"Brand Collection 382 - Givenchy L'Interdit" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 99.99, desc: "É uma fragrância que captura a feminilidade em cada gota. Com uma composição cuidadosamente elaborada, este perfume é ideal para mulheres que buscam expressar sua personalidade e charme de forma sutil e sofisticada." , estoque: "disponivel" , foto: "fotos/brand382.jpeg" } , 
-    { nome:"Brand Collection 445 - Prada Paradoxe" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco: 99.99 , desc: "É um perfume Oriental Floral Feminino, ideal para quem quer marcar sua presença!" , estoque:"disponivel" , foto: "fotos/brand445.jpeg" } , 
-    { nome:"Brand Collection 455 - Narciso Rodriguez For Her" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco: 99.99, desc: "A composição olfativa é uma harmonia de notas florais, orientais, aquáticas, especiadas, gourmand e aromáticas, proporcionando uma experiência sensorial rica e diversificada." , estoque: "disponivel" , foto: "fotos/brand455.jpeg" } , 
-    { nome:"Brand Collection 003 - Elizabeth Arden Red Door" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco:99.99 , desc: "As notas de topo são: Toranja, Bergamota e Limão. As notas de coração são: Flor de Laranjeira, Rosa e Jasmim. As notas de fundo são: Couro, Patchouli, Pralinê, Almíscar, Sândalo e Cedro." , estoque: "disponivel" , foto: "fotos/brand003.jpeg" } , 
-    { nome:"Brand Collection 069 - Lancôme La Nuit Trésor" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 99.99 , desc: "Eternamente o símbolo de Lancôme e de cada frasco de Trésor há 25 anos, esta rosa recebe um toque de preto, finamente esculpido, criando a essência da ultrafeminilidade e incorporando o amor absoluto. Floral, Oriental." , estoque: "disponivel" , foto: "fotos/brand0692.jpeg"} , 
-    { nome:"Brand Collection 093 - Dolce & Gabbana Light Blue" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 99.99 , desc: "O cedro siciliano alia-se à frescura da maçã verde e à sedução e espontaneidade floral da campainha, em que a nota de saída capta a essência de um verão solarengo no sul da Itália. Feminina e determinada, a frescura do bambu é suavizada por um bouquet feminino de jasmim e rosa branca." , estoque: "disponivel" , foto: "fotos/brand093.jpeg" } , 
-    { nome:"Brand Collection 188 - Giorgio Armani My Way" , cat: "brand-feminina" , novidades: false , ml: "25ml" , preco:99.99 , desc: "É um perfume floral marcante e luminoso, com um toque sofisticado de baunilha. Passa a sensação de um buquê de flores brancas frescas, ideal para o dia a dia ou ocasiões especiais." , estoque:"disponivel" , foto: "fotos/brand188.jpeg" } ,
-    { nome:"Brand Collection 234 - Bvlgari Petits et Mamans" , cat: "brand-feminina" , novidades:false ,ml: "25ml" , preco:99.99 , desc: "Uma fragrância extremamente suave, delicada e aconchegante. Tem o famoso cheirinho de bebê ou de talco, com destaque para a nota de camomila e um fundo sutilmente adocicado de baunilha. É perfeita para quem busca um aroma pós-banho leve, limpo e reconfortante" , estoque: "disponivel" , foto: "fotos/brand234.jpeg" } ,
-    { nome:"Brand Collection 297 - Carolina Herrera Very Good Girl" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco: 110.00 , desc:"É uma fragrância feminina elegante, romântica e marcante. Ela equilibra a doçura frutada com a sofisticação das flores e o toque marcante das madeiras, ideal para quem busca um aroma sedutor e moderno." , estoque: "disponivel" , foto: "fotos/brand297.jpeg" } , 
-    { nome:"Brand Collection 303 - Dolce & Gabbana Devotion" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco:99.99, desc: "Uma fragrância doce, cremosa e marcante. Abre com o frescor do limão cristalizado, evolui com a delicadeza da flor de laranjeira e fecha com o calor aconchegante da baunilha. Perfeito para quem ama perfumes bem doces e com toque de confeitaria fina." , estoque: "disponivel" , foto: "fotos/brand303.jpeg" } , 
-    { nome:"Brand Collection 332 - Carolina Herrera Good Girl Glam", cat: "brand-feminina" , novidades:false , ml:"25ml" , preco:110.00 , desc: "O perfume Feminino Brand Collection 332 é um floral amadeirado apaixonante! Foi feito totalmente inspirado em Very Good Girl Glam, de Carolina Herrera. Possui uma fragrância feita para mulheres destemidas e brilhantemente ousadas." , estoque:"disponivel" , foto: "fotos/brand332.jpeg" } , 
-    { nome:"Brand Collection 420 - D'Or Étoile (infantil)" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco:99.99 , desc: "É um abraço e a suavidade dos primeiros cuidados. Inspirado em Bonne Étoile Baby Dior, ele se abre com a delicadeza fresca da Pera Verde, trazendo sensação de limpeza e leveza imediata." , estoque:"disponivel" , foto: "fotos/brand420.jpeg" } ,
-    { nome:"Brand Collection 435 - Burberry Goddess" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:99.99 , desc:"É uma fragrância marcante e sofisticada, focada em um trio de baunilhas enriquecido por um toque luminoso e limpo de lavanda. O resultado é um perfume doce, mas incrivelmente elegante e confortável." , estoque:"disponivel" , foto: "fotos/brand435.jpeg" } ,
+    { nome:"Club de Nuit Man", cat:"importados", novidade:true, ml:"105ml", preco:389.90, desc:"Cítrico amadeirado, com limão, notas frutadas e fundo de musk e madeiras.", estoque:"disponivel", foto:"fotos/clubdenuitman.jpeg" },
+    { nome:"La Voie", cat:"importados", novidade:false, ml:"100ml", preco:389.90, desc:"Floral amadeirado, com pera, bergamota e flores brancas.", estoque:"disponível", foto:"fotos/lavoie.jpeg" },
+    { nome:"Club de Nuit Woman", cat:"importados", novidade:true, ml:"105ml", preco:389.90, desc:"Floral frutado, com cítricos, flores e fundo de patchouli.", estoque:"disponivel", foto:"fotos/clubdenuitwoman.jpg" },
+    { nome:"Brand Collection 387 - The Monst Wanted", cat:"brand-masculina", novidade:false, ml:"25ml", preco:89.90, desc:"Âmbar especiado, com cardamomo e fundo amadeirado.", estoque:"disponivel", foto:"fotos/brand387.jpeg" },
+    { nome:"Rouh", cat:"importados", novidade:false, ml:"100ml", preco:389.90, desc:"Oriental amadeirado, de perfil quente e envolvente.", estoque:"disponivel", foto:"" },
+    { nome:"Eqaab", cat:"arabes", novidade:false, ml:"100ml", preco:389.90, desc:"Oriental especiado, com fundo marcante.", estoque:"disponivel", foto:"" },
+    { nome:"Brand Collection 007 - Dior J'adore" , cat: "brand-feminina" , novidade:false, ml:"25ml", preco: 89.90, desc:"Floral luminoso, com flores brancas e toque frutado.", estoque: "disponivel", foto:"fotos/brand_jadore_dior.jpg" } ,
+    { nome:"Brand Collection 015 - Lancôme Idôle" , cat: "brand-feminina" , novidade:false, ml:"25ml", preco: 89.90 , desc:"Floral fresco, com rosa e fundo limpo de musk." , estoque: "disponivel", foto: "fotos/brand015idole.jpg" } ,
+    { nome:"Brand Collection 021 - Chanel Coco Mademoiselle" , cat: "brand-feminina" , novidade:false, ml: "25ml", preco:89.90, desc:"Floral ambarado, com cítricos, rosa e patchouli." , estoque:"disponivel" , foto: "fotos/brand021coco.jpeg" } ,
+    { nome:"Brand Collection 039 - Chanel Chance" , cat: "brand-feminina" , novidade:false , ml:"25ml" , preco: 89.90 , desc:"Chipre floral, com frescor especiado e fundo cremoso." , estoque: "disponivel" , foto: "fotos/brand039.jpeg" } ,
+    { nome:"Brand Collection 059 - Valentino Valentina Assoluto", cat: "brand-feminina" , novidade:false , ml:"25ml" , preco:89.90, desc:"Floral oriental, com notas florais e fundo quente." , estoque: "disponivel", foto: "fotos/brand059.jpeg" } ,
+    { nome:"Brand Collection 063 - Giorgio Armani Sí", cat: "brand-feminina" , novidade: false , ml:"25ml" , preco: 89.90 , desc:"Frutado floral, com toque de cassis e fundo amadeirado." , estoque: "disponivel" , foto: "fotos/brand063.jpeg" } , 
+    { nome:"Brand Collection 076 - Lancôme La Vie Est Belle" , cat :"brand-feminina" , novidade: false , ml:"25ml" , preco: 89.90 , desc:"Floral gourmand, com frutas, flores e base adocicada." , estoque: "disponivel" , foto : "fotos/brand076.jpeg" } , 
+    { nome:"Brand Collection 087 - Paco Rabanne Olympéa" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco: 89.90 , desc:"Âmbar floral, com notas salgadas e baunilha." , estoque : "disponivel" , foto: "fotos/brand087.jpeg" } ,
+    { nome:"Brand Collection 136 - Jean Paul Gaultier Scandal " , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 89.90 , desc:"Floral adocicado, com cítricos e mel." , estoque : "disponivel" , foto: "fotos/brand136.jpeg" } , 
+    { nome:"Brand Collection 151 - Parfums de Marly Delina" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 89.90 , desc:"Floral frutado, com notas de frutas e rosa." , estoque : " disponivel" , foto: "fotos/brand151.jpeg" } , 
+    { nome:"Brand Collection 163 - Lancôme Hypnôse" , cat: "brand-feminina" , novidades:false , ml: "25ml" ,preco: 89.90 , desc:"Âmbar baunilhado, com flores e fundo cremoso." , estoque: "disponivel" , foto: "fotos/brand163.2.jpeg" } , 
+    { nome:"Brand Collection 341 - Chloé Nomade" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 89.90 , desc:"Chipre floral, com frésia e musgo de carvalho." , estoque: "disponivel" , foto: "fotos/brand341.jpeg" } , 
+    { nome:"Brand Collection 382 - Givenchy L'Interdit" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 89.90, desc:"Floral branco, com toque amadeirado." , estoque: "disponivel" , foto: "fotos/brand382.jpeg" } , 
+    { nome:"Brand Collection 445 - Prada Paradoxe" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco: 89.90 , desc:"Floral ambarado, com flores brancas e musk." , estoque:"disponivel" , foto: "fotos/brand445.jpeg" } , 
+    { nome:"Brand Collection 455 - Narciso Rodriguez For Her" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco: 89.90, desc:"Floral almiscarado, com rosa, musk e fundo amadeirado." , estoque: "disponivel" , foto: "fotos/brand455.jpeg" } , 
+    { nome:"Brand Collection 003 - Elizabeth Arden Red Door" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco:89.90 , desc:"Floral clássico, com cítricos, rosa, jasmim e fundo amadeirado." , estoque: "disponivel" , foto: "fotos/brand003.jpeg" } , 
+    { nome:"Brand Collection 069 - Lancôme La Nuit Trésor" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 89.90 , desc:"Floral gourmand, com rosa e fundo de baunilha." , estoque: "disponivel" , foto: "fotos/brand0692.jpeg"} , 
+    { nome:"Brand Collection 093 - Dolce & Gabbana Light Blue" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 89.90 , desc:"Floral frutado fresco, com maçã verde, cedro e jasmim." , estoque: "disponivel" , foto: "fotos/brand093.jpeg" } , 
+    { nome:"Brand Collection 188 - Giorgio Armani My Way" , cat: "brand-feminina" , novidades: false , ml: "25ml" , preco:89.90 , desc:"Floral branco, com flores luminosas e baunilha." , estoque:"disponivel" , foto: "fotos/brand188.jpeg" } ,
+    { nome:"Brand Collection 234 - Bvlgari Petits et Mamans" , cat: "brand-feminina" , novidades:false ,ml: "25ml" , preco:89.90 , desc:"Suave e atalcado, com camomila e baunilha." , estoque: "disponivel" , foto: "fotos/brand234.jpeg" } ,
+    { nome:"Brand Collection 297 - Carolina Herrera Very Good Girl" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco: 119.90 , desc:"Floral frutado, com frutas vermelhas, rosa e madeiras." , estoque: "disponivel" , foto: "fotos/brand297.jpeg" } , 
+    { nome:"Brand Collection 303 - Dolce & Gabbana Devotion" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco:89.90, desc:"Gourmand, com limão cristalizado, flor de laranjeira e baunilha." , estoque: "disponivel" , foto: "fotos/brand303.jpeg" } , 
+    { nome:"Brand Collection 332 - Carolina Herrera Good Girl Glam", cat: "brand-feminina" , novidades:false , ml:"25ml" , preco:119.90 , desc:"Floral amadeirado, com notas frutadas e flores." , estoque:"disponivel" , foto: "fotos/brand332.jpeg" } , 
+    { nome:"Brand Collection 420 - D'Or Étoile (infantil)" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Suave e frutado, com pera verde e flores delicadas." , estoque:"disponivel" , foto: "fotos/brand420.jpeg" } ,
+    { nome:"Brand Collection 435 - Burberry Goddess" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Baunilhado aromático, com lavanda e diferentes facetas de baunilha." , estoque:"disponivel" , foto: "fotos/brand435.jpeg" } ,
+    { nome:"Brand Collection 438 - Scandal  Absolu" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral quente, com tuberosa, figo preto e sândalo." , estoque:"disponivel" , foto:"fotos/brand438.jpeg" } ,
+    { nome:"Brand Collection 351 - Versace Dylan Turquoise Pour Famme" , cat:"brand-feminina" , novidades:false, ml:"25ml" ,  preco:89.90 , desc:"Floral frutado, com limão, goiaba e musk." , estoque:"disponivel" , foto:"fotos/brand351.jpeg" } , //adicionar segunda foto
+    { nome:"Brand Collection 031 - Chanel Chance Trandé" , cat:"brand-feminina" , novidades:false, ml:"25ml" , preco:89.90 , desc:"Floral delicado, com frutas leves e flores." , estoque: "disponivel" , foto: "fotos/brand031.jpeg" } ,
+    { nome:"Brand Collection 043 - Alien Thierry Mugler" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar floral, com jasmim, madeiras e âmbar." , estoque:"disponivel" , foto: "fotos/brand043.jpeg" } ,
+    { nome:"Brand Collection 324 - La Belle" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Frutado gourmand, com pera, jasmim e baunilha." , estoque:"disponivel" , foto:"fotos/brand324.jpeg" } , 
+    { nome:"Brand Collection 294 - L'interdit Rouge" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral especiado, com laranja sanguínea e notas quentes." , estoque:"disponivel" , foto:"fotos/brand294.jpeg" } , //adicionar segunda foto
+    { nome:"Brand Collection 012 - La Vie Est Belle" , cat:"brand-feminina" , nonidades:false , ml:"25ml" , preco:89.90 , desc:"Floral gourmand, com pera, íris, pralinê e baunilha." , estoque:"disponivel" , foto:"fotos/brand012.jpeg" } ,  
+    { nome:"Brand Collection 159 - Libre de Yves Saint Laurent" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral aromático, com lavanda, cítricos e flores brancas." , estoque:"disponivel" , foto: "fotos/brand159.jpeg" } ,
+    { nome:"Brand Collection 415 - Paco Rabanne Fame Parfum" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral frutado, com manga, bergamota, jasmim e incenso." , estoque: "disponivel" , foto:"fotos/brand415.jpeg"} ,
+    { nome:"Brand Collection 210 - Paco Rabanne Pure Xs For Her" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral oriental, com flor de laranjeira, pêssego e baunilha." , estoque:"disponivel" , foto:"fotos/brand210.jpg" } , 
+    { nome:"Brand Collection 370 - Versace Pour Famme Dylan Purple" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral frutado, com pera, bergamota, frésia e musk." , estoque:"disponivel" , foto:"fotos/brand370.jpg" } , // adicionar segunda foto
+    { nome:"Brand Collection 034 - 212VIP Rosé da Carolina Herrera" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Frutado floral, com champanhe e notas de frutas." , estoque:"disponivel" , foto:"fotos/brand034.jpg" } , 
+    { nome:"Brand Collection 428 - Fame Intense Paco Rabanne" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral amadeirado, com coco, jasmim e incenso." , estoque:"disponivel" , foto:"fotos/brand428.jpg" } , // adicionar segunda foto 
+    { nome:"Brand Collection 410 - Red Dulce & Gabbana" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral clássico, com frutas, flores e fundo amadeirado." , estoque:"disponivel" , foto:"fotos/brand410.jpg" } , // adicionar segunda foto
+    { nome:"Brand Collection 365 - Fame Paco Rabanne" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral cremoso, com manga, jasmim e incenso." , estoque:"disponivel" , foto:"fotos/brand365.jpeg"} , 
+    { nome:"Brand Collection 378 - Fame Blooming Pink Paco Rabanne" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral amadeirado, com facetas frutadas e musk." , estoque:"disponivel" , foto:"fotos/brand378.jpeg" } , 
+    { nome:"Brand Collection 366 - Angel Elixir Thierry Mugler" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral gourmand, com pimenta rosa, jasmim e baunilha." , estoque:"disponivel" , foto:"fotos/brand366.jpeg" } ,
+    { nome:"Brand Collection 116 - Invictus Paco Rabanne" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aquático, com toranja, notas marinhas e madeiras." , estoque:"disponivel" , foto:"fotos/brand116.jpeg" } , 
+    { nome:"Brand Collection 070 - Bleu de Chanel" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com cítricos, incenso e cedro." , estoque:"disponivel" , foto:"fotos/brand070.jpeg" } , 
+    { nome:"Brand Collection 214 - Invictus Victory Paco Rabanne" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar amadeirado, com limão, lavanda, incenso e baunilha." , estoque:"disponivel" , foto:"fotos/brand214.jpeg" } , 
+    { nome:"Brand Collection 005 - 1 Million Paco Rabanne" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado especiado, com mandarina, canela e couro." , estoque:"disponivel" , foto:"fotos/brand005.jpeg" } , 
+    { nome:"Brand Collection 321 - Scandal Pour Homme Jean Paul Gaultier" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar amadeirado, com mandarina, caramelo e vetiver." , estoque:"disponivel" , foto:"fotos/brand321.jpeg" } , 
+    { nome:"Brand Collection 296 - Phantom Paco Rabanne" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Aromático amadeirado, com lavanda, limão e baunilha." , estoque:"disponivel" , foto:"fotos/brand296.jpeg" } , 
+    { nome:"Brand Collection 054 - Creed Aventus" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Chipre frutado, com abacaxi, bergamota e madeiras." , estoque:"disponivel" , foto:"fotos/brand054.jpeg" } , 
+    { nome:"Brand Collection 100 - Sauvage de Christian Dior" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Aromático, com bergamota, pimenta, lavanda e cedro." , estoque:"disponivel" , foto:"fotos/brand100.jpeg" } , 
+    { nome:"Brand Collection 190 - Animale For Men" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Oriental amadeirado, com limão, lavanda e couro." , estoque:"disponivel" , foto:"fotos/brand190.jpeg" } , 
+    { nome:"Brand Collection 325 - Le Male Le Parfum JeanPaul Gaultier" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar aromático, com cardamomo, lavanda e baunilha." , estoque:"disponivel" , foto:"fotos/brand325.jpeg" } , // Para incluir outra foto, use a propriedade fotos descrita abaixo.
+    { nome:"Brand Collection 008 - 212 VIP Men Carolina Herrera" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com maracujá, hortelã e couro." , estoque:"disponivel" , foto:"fotos/brand008.jpeg" } , 
+    { nome:"Brand Collection 242 - Versace Eros" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com hortelã, maçã verde e baunilha." , estoque:"disponivel" , foto:"fotos/brand242.jpeg" } , 
+    { nome:"Brand Collection 153 - Le Male Jean PAul Gaultier" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar aromático, com hortelã, lavanda e cardamomo." , estoque:"disponivel" , foto:"fotos/brand153.jpeg" } , 
+    { nome:"Brand Collection 224 - K by Dolce & Gabbana" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com cítricos e zimbro." , estoque:"disponivel" , foto:"fotos/brand224.jpeg" } , 
+    { nome:"Brand Collection 323 - Le Male Elixir Jean Paul Gaultier" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar aromático, com lavanda, hortelã e baunilha." , estoque:"disponivel" , foto:"fotos/brand323.jpeg" } , 
+    { nome:"Brand Collection 250 - Azzaro Wanted" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado especiado, com limão, gengibre e hortelã." , estoque:"disponivel" , foto:"fotos/brand250.jpeg" } , 
+    { nome:"Brand Collection 433 - MYSLF Yves Saint Laurent" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com bergamota, flor de laranjeira e patchouli." , estoque:"disponivel" , foto:"fotos/brand433.jpeg" } , 
+    { nome:"Brand Collection 102 - 212 Men NYC Carolina herrera" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado fresco, com toranja, bergamota e gengibre." , estoque:"disponivel" , foto:"fotos/brand102.jpeg" } , 
+    { nome:"Brand Collection 366 - Angel Elixir Thierry Mugler" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral gourmand, com pimenta rosa, jasmim e baunilha." , estoque:"disponivel" , foto:"fotos/brand366.jpeg" } ,
+    { nome:"Brand Collection 066 - Silver Scent Intense Jacques Bogart" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar amadeirado, com limão e flor de laranjeira." , estoque:"disponivel" , foto:"fotos/brand066.jpeg" } ,
+    { nome:"Body Lotion 093 - Ligth Blue Dolce & Gabanna" , cat:"body-feminina" , novidade:false , ml:"200ml" , preco:70.00 , desc:"Floral frutado cítrico, com limão siciliano, maçã verde, bambu e um fundo leve de cedro e âmbar." , estoque:"disponivel" , foto:"fotos/body093.jpeg" } ,
+    { nome:"Body Lotion 402 - Erba Pura Xerjoff" , cat:"body-feminina" , novidade:false , ml:"200ml" , preco:70.00, desc:"Oriental frutado, com uma explosão de frutas tropicais suculentas, laranja siciliana, limão e bergamota, amaciados por um fundo denso e confortável de baunilha de Madagascar e almíscar branco." , estoque:"disponivel" , foto:"fotos/body402.jpeg" } ,
+    { nome:"Body Lotion 151 - Delina Parfums de Marly" , cat:"body-feminina" , novidade:false , ml:"200ml" , preco:70.00 , desc:"Floral frutado sofisticado, com notas marcantes de lichia, ruibarbo e rosa turca, envolvidas pela doçura da baunilha e pela cremosidade do almíscar e do cashmeran." , estoque:"disponivel" , foto:"fotos/body151.jpeg" } ,
+    { nome:"Body Lotion 136 - Scandal Jean Paul Gaultier" , cat:"body-feminina" , novidade:false , ml:"200ml" , preco:70.00 , desc:"Chipre gourmand marcante, dominado pela doçura intensa do mel dourado e caramelo, combinado com a elegância da gardênia e um fundo sensual de patchouli e cera de abelha." , estoque:"disponivel" , foto:"fotos/body136.jpeg" } ,
+    { nome:"Body Lotion 100 - Sauvage Christian Dior" , cat:"body-masculina" , novidade:false , ml:"200ml" , preco:70.00 , desc:"Aromático fougère masculino, com o frescor cítrico e marcante da bergamota da Calábria e pimenta, equilibrado por lavanda no coração e um fundo imponente e mineral de ambroxan e cedro." , estoque:"disponivel" , foto:"fotos/body100.jpeg" } ,
+    { nome:"Body Lotion 168 - Angel Thiery Mugler" , cat:"body-masculina" , novidade:false , ml:"200ml" , preco:70.00 , desc:"Oriental baunilha gourmand, intensamente doce com notas de algodão-doce, mel e melão na saída, evoluindo para um coração frutado e um fundo marcante de chocolate amargo, caramelo, baunilha e patchouli."  , estoque:"disponivel" , foto:"fotos/body168.jpeg" } ,
+    { nome:"Body Lotion 168 - Angel Thiery Mugler" , cat:"body-feminina" , novidade:false , ml:"200ml" , preco:70.00 , desc:"Oriental baunilha gourmand, intensamente doce com notas de algodão-doce, mel e melão na saída, evoluindo para um coração frutado e um fundo marcante de chocolate amargo, caramelo, baunilha e patchouli."  , estoque:"disponivel" , foto:"fotos/body168.jpeg" } ,
+
+
+
+
+
+
+
+
 
 
 ]    
+  // Para ativar uma segunda imagem, acrescente fotos:["fotos/produto.jpeg", "fotos/produto-2.jpeg"]
+  // no cadastro do produto. Mantenha os arquivos correspondentes na pasta fotos/.
+  function fotosDoProduto(p){
+    return Array.isArray(p.fotos) && p.fotos.length ? p.fotos.filter(Boolean) : (p.foto ? [p.foto] : []);
+  }
+  function atualizarFoto(elemento, fotos, indice){
+    elemento.style.backgroundImage = fotos[indice] ? `url("${fotos[indice]}")` : '';
+    elemento.dataset.fotoIndice = String(indice);
+    const indicador = elemento.querySelector('[data-photo-count]');
+    if(indicador) indicador.textContent = `${indice + 1} / ${fotos.length}`;
+  }
+  function gestoFotos(elemento, obterFotos, mudarFoto){
+    let inicioX = null;
+    elemento.addEventListener('touchstart', e => { inicioX = e.touches[0].clientX; }, { passive:true });
+    elemento.addEventListener('touchend', e => {
+      if(inicioX === null || obterFotos().length < 2) return;
+      const deslocamento = e.changedTouches[0].clientX - inicioX;
+      inicioX = null;
+      if(Math.abs(deslocamento) > 35){
+        elemento.dataset.ignorouClique = '1';
+        mudarFoto(deslocamento < 0 ? 1 : -1);
+        setTimeout(() => { delete elemento.dataset.ignorouClique; }, 450);
+      }
+    }, { passive:true });
+  }
   function formatarPreco(v){
     return v.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
   }
@@ -1169,7 +1297,7 @@
     });
 
     if(resultado.length === 0){
-      grid.innerHTML = '<div class="sem-resultado">Nenhum perfume encontrado.</div>';
+      grid.innerHTML = '<div class="sem-resultado">Nenhum produto encontrado.</div>';
       return;
     }
 
@@ -1188,24 +1316,28 @@
         const botaoLabel = esgotado ? 'Esgotado' : 'Adicionar';
         const botaoAtributo = esgotado ? 'disabled' : `data-add="${p.nome}"`;
 
-        const ovalLabel = p.foto ? '' : `
+        const fotos = fotosDoProduto(p);
+        const ovalLabel = fotos.length ? '' : `
             <div class="oval-label">
               <span class="cat">${nomeCategoriaCurta[p.cat] || ''}</span>
               <p class="nome">${p.nome}</p>
               <span class="ml">${p.ml}</span>
             </div>`;
-        const tituloForaDaFoto = p.foto
+        const tituloForaDaFoto = fotos.length
           ? `<p class="card-title">${p.nome} <span class="card-title-ml">${p.ml}</span></p>`
           : '';
 
-        const estiloFoto = p.foto
-          ? `background-image:url('${p.foto}');background-size:cover;background-position:center;background-repeat:no-repeat;`
+        const estiloFoto = fotos.length
+          ? `background-image:url('${fotos[0]}');background-size:cover;background-position:center;background-repeat:no-repeat;`
           : '';
 
         card.innerHTML = `
           <div class="card-media" data-detalhe="${p.nome}" style="cursor:pointer;${estiloFoto}">
             ${selo}
             ${ovalLabel}
+            ${fotos.length > 1 ? `<button type="button" class="photo-arrow photo-prev" data-photo-dir="-1" aria-label="Foto anterior de ${p.nome}">‹</button>
+              <button type="button" class="photo-arrow photo-next" data-photo-dir="1" aria-label="Próxima foto de ${p.nome}">›</button>
+              <span class="photo-hint">Deslize para ver mais fotos</span><span class="photo-count" data-photo-count>1 / ${fotos.length}</span>` : ''}
           </div>
           ${tituloForaDaFoto}
           <p class="card-desc">${p.desc}</p>
@@ -1215,6 +1347,10 @@
             <button class="wpp-btn" ${botaoAtributo}>${botaoLabel}</button>
           </div>`;
         grid.appendChild(card);
+        if(fotos.length > 1){
+          const media = card.querySelector('.card-media');
+          gestoFotos(media, () => fotos, dir => mudarFotoCard(media, fotos, dir));
+        }
     });
   }
 
@@ -1223,7 +1359,19 @@
     render();
   });
 
+  function mudarFotoCard(media, fotos, dir){
+    const atual = Number(media.dataset.fotoIndice || 0);
+    atualizarFoto(media, fotos, (atual + dir + fotos.length) % fotos.length);
+  }
+
   grid.addEventListener('click', e => {
+    const seta = e.target.closest('[data-photo-dir]');
+    if(seta){
+      const media = seta.closest('.card-media');
+      const produto = produtos.find(p => p.nome === media.dataset.detalhe);
+      if(produto) mudarFotoCard(media, fotosDoProduto(produto), Number(seta.dataset.photoDir));
+      return;
+    }
     const btnAdd = e.target.closest('[data-add]');
     if(btnAdd){
       const produto = produtos.find(p => p.nome === btnAdd.dataset.add);
@@ -1232,6 +1380,7 @@
     }
     const media = e.target.closest('[data-detalhe]');
     if(media){
+      if(media.dataset.ignorouClique) return;
       const produto = produtos.find(p => p.nome === media.dataset.detalhe);
       if(produto) abrirModal(produto);
     }
@@ -1385,6 +1534,18 @@
   const modalClose = document.getElementById('modalClose');
   const modalAdd = document.getElementById('modalAdd');
   let produtoModalAtual = null;
+  const modalPhotoPrev = document.getElementById('modalPhotoPrev');
+  const modalPhotoNext = document.getElementById('modalPhotoNext');
+  const modalPhotoHint = document.getElementById('modalPhotoHint');
+  function mudarFotoModal(dir){
+    const fotos = fotosDoProduto(produtoModalAtual || {});
+    if(fotos.length < 2) return;
+    const atual = Number(modalMedia.dataset.fotoIndice || 0);
+    atualizarFoto(modalMedia, fotos, (atual + dir + fotos.length) % fotos.length);
+  }
+  modalPhotoPrev.addEventListener('click', () => mudarFotoModal(-1));
+  modalPhotoNext.addEventListener('click', () => mudarFotoModal(1));
+  gestoFotos(document.getElementById('modalMedia'), () => fotosDoProduto(produtoModalAtual || {}), mudarFotoModal);
 
   function abrirModal(p){
     produtoModalAtual = p;
@@ -1399,8 +1560,11 @@
 
     const modalMedia = document.getElementById('modalMedia');
     const modalOvalLabel = document.getElementById('modalOvalLabel');
-    if(p.foto){
-      modalMedia.style.backgroundImage = `url('${p.foto}')`;
+    const fotos = fotosDoProduto(p);
+    modalPhotoPrev.hidden = modalPhotoNext.hidden = modalPhotoHint.hidden = fotos.length < 2;
+    modalMedia.dataset.fotoIndice = '0';
+    if(fotos.length){
+      modalMedia.style.backgroundImage = `url('${fotos[0]}')`;
       modalMedia.style.backgroundSize = 'cover';
       modalMedia.style.backgroundPosition = 'center';
       modalOvalLabel.style.display = 'none';
