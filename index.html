@@ -1004,6 +1004,252 @@
   .photo-hint{left:10px} .photo-count{right:10px}
   .modal-photo-hint{left:50%;transform:translateX(-50%);white-space:nowrap}
   .photo-arrow[hidden], .modal-photo-prev[hidden], .modal-photo-next[hidden], .photo-hint[hidden]{display:none!important}
+
+
+  /* ===== AJUSTES DE EXPERIÊNCIA — HERO + PISTA DO CATÁLOGO ===== */
+  .hero{
+    height:78vh;
+    min-height:500px;
+    max-height:820px;
+  }
+
+  .catalog-cue{
+    position:absolute;
+    left:50%;
+    bottom:20px;
+    transform:translateX(-50%);
+    z-index:4;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:7px;
+    color:rgba(255,253,249,.96);
+    text-decoration:none;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .catalog-cue-label{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    padding:7px 12px;
+    border:1px solid rgba(255,255,255,.32);
+    border-radius:999px;
+    background:rgba(33,26,17,.18);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    box-shadow:0 4px 18px rgba(0,0,0,.12);
+  }
+  .catalog-cue-arrow{
+    width:18px;
+    height:18px;
+    border-right:1.5px solid currentColor;
+    border-bottom:1.5px solid currentColor;
+    transform:rotate(45deg);
+    animation:catalogCue 1.55s ease-in-out infinite;
+  }
+  @keyframes catalogCue{
+    0%,100%{transform:translateY(-2px) rotate(45deg);opacity:.58}
+    50%{transform:translateY(6px) rotate(45deg);opacity:1}
+  }
+
+  .intro{
+    margin:28px auto 0;
+  }
+  .intro p{
+    margin:0;
+    font-size:clamp(17px,2vw,20px);
+    line-height:1.35;
+    letter-spacing:-.015em;
+  }
+  .search-wrap{
+    margin:16px auto 0;
+  }
+
+  /* ===== SOBRE / RODAPÉ MAIS EDITORIAL ===== */
+  .sobre{
+    max-width:760px;
+    margin:6px auto 0;
+    padding:54px 24px 24px;
+    border-top:1px solid var(--gold-line);
+  }
+  .sobre-kicker{
+    margin:0 0 10px;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:rgba(58,46,31,.52);
+  }
+  .sobre h2{
+    margin:0 0 14px;
+    font-size:clamp(25px,4vw,34px);
+    line-height:1.12;
+    letter-spacing:-.02em;
+  }
+  .sobre > p{
+    max-width:560px;
+    margin:0 auto 30px;
+    font-size:15px;
+    line-height:1.7;
+    color:rgba(58,46,31,.78);
+  }
+  .sobre-info{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+    max-width:620px;
+    margin:0 auto;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  }
+  .sobre-info span{
+    min-height:76px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px 18px;
+    border:1px solid rgba(138,109,59,.16);
+    border-radius:14px;
+    background:rgba(255,253,249,.42);
+    font-size:12px;
+    line-height:1.55;
+    color:rgba(58,46,31,.68);
+  }
+  footer{
+    padding:28px 20px 44px;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:rgba(58,46,31,.48);
+  }
+
+  @media (max-width: 600px){
+    .hero{
+      height:62svh;
+      min-height:410px;
+      max-height:560px;
+    }
+    .hero-logo{
+      top:7%;
+      width:clamp(175px,46vw,235px);
+    }
+    .hero-smoke{
+      top:7%;
+      width:clamp(250px,66vw,360px);
+      height:clamp(250px,66vw,360px);
+    }
+    .catalog-cue{
+      bottom:15px;
+    }
+    .catalog-cue-label{
+      font-size:9px;
+      padding:6px 10px;
+    }
+    .intro{
+      margin:22px auto 0;
+      padding:0 20px;
+    }
+    .search-wrap{
+      margin-top:14px;
+      padding:0 18px;
+    }
+    main{
+      padding-top:22px;
+    }
+    .sobre{
+      padding:44px 18px 18px;
+    }
+    .sobre > p{
+      margin-bottom:22px;
+      font-size:14px;
+    }
+    .sobre-info{
+      grid-template-columns:1fr;
+      gap:9px;
+    }
+    .sobre-info span{
+      min-height:0;
+      padding:14px 16px;
+    }
+    footer{
+      padding:24px 18px 34px;
+      font-size:10px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .catalog-cue-arrow{animation:none;}
+  }
+
+  /* ===== REFINO FINAL — CAPA, LOGO E BLOCO INSTITUCIONAL ===== */
+  .hero::before{
+    content:"";
+    position:absolute;
+    z-index:1;
+    top:1%;
+    left:50%;
+    width:min(78vw,560px);
+    height:34%;
+    transform:translateX(-50%);
+    background:radial-gradient(ellipse at center, rgba(255,248,235,.34) 0%, rgba(255,248,235,.16) 38%, rgba(255,248,235,0) 74%);
+    filter:blur(10px);
+    pointer-events:none;
+  }
+  .hero-logo{
+    top:6.5%;
+    width:clamp(215px,54vw,330px);
+    filter:drop-shadow(0 2px 3px rgba(255,248,235,.35)) drop-shadow(0 9px 24px rgba(0,0,0,.42));
+  }
+  .hero-smoke{
+    top:7%;
+    opacity:.72;
+  }
+
+  .sobre{
+    max-width:720px;
+    margin:18px auto 0;
+    padding:50px 24px 28px;
+  }
+  .sobre h2{
+    margin:0 0 16px;
+    font-size:clamp(23px,3.5vw,30px);
+    letter-spacing:.12em;
+    line-height:1.1;
+  }
+  .sobre > p{
+    max-width:540px;
+    margin:0 auto 26px;
+  }
+  .sobre-info{
+    max-width:600px;
+  }
+
+  @media (max-width:600px){
+    .hero{
+      height:60svh;
+      min-height:400px;
+      max-height:540px;
+    }
+    .hero::before{
+      top:2%;
+      width:88vw;
+      height:31%;
+    }
+    .hero-logo{
+      top:6%;
+      width:clamp(195px,58vw,260px);
+    }
+    .hero-smoke{ top:6.5%; opacity:.66; }
+    .sobre{
+      margin-top:10px;
+      padding:40px 20px 20px;
+    }
+    .sobre h2{ font-size:21px; }
+  }
+
 </style>
 </head>
 <body>
@@ -1029,7 +1275,6 @@
   <div class="hero-content">
     <h1 class="visually-hidden">Lavi Perfumes</h1>
   </div>
-  <div class="scroll-hint"></div>
 </section>
 
 <button class="menu-toggle" id="menuToggle" aria-label="Abrir categorias">
@@ -1113,7 +1358,7 @@
   </div>
 </div>
 
-<div class="intro">
+<div class="intro" id="catalogo">
   <p>Sua essência está aqui.</p>
 </div>
 
