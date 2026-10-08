@@ -1285,7 +1285,11 @@
 
 <nav class="filters" id="filters">
   <button class="filter-btn active" data-cat="novidades">Novidades</button>
-  <button class="filter-btn" data-cat="arabes">Árabes</button>
+  
+  <span class="filter-group-label">Perfumes em óleo - Attar Árabe</span>
+  <button class="filter-btn filter-btn-sub" data-cat="attar-masculino">Masculino</button>
+  <button class="filter-btn filter-btn-sub" data-cat="attar-feminino">Feminino</button>
+  <button class="filter-btn filter-btn-sub" data-cat="attar-unissex">Unissex</button>
 
   <span class="filter-group-label">Brand Collection</span>
   <button class="filter-btn filter-btn-sub" data-cat="brand-feminina">Feminino</button>
@@ -1378,7 +1382,7 @@
   <h2>LAVI PERFUMES</h2>
   <p>Uma curadoria de fragrâncias importadas, árabes e Brand Collection, escolhidas para você encontrar a sua essência.</p>
   <div class="sobre-info">
-    <span>Para atendimento e pedidos fale conosco pelo Whatsapp</span>
+    <span>Para atendimento e pedidos, fale conosco pelo Whatsapp</span>
   </div>
 </div>
 
@@ -1396,7 +1400,9 @@
   let termoBusca = '';
 
   const nomeCategoria = {
-    'arabes':'Árabes',
+    'attar-masculino':'Perfume em óleo - Attar Árabe . Masculino',
+    'attar-feminino':'Perfume em óleo - Attar Árabe . Feminino',
+    'attar-unissex':'Perfume em óleo - Attar Árabe . Unissex',
     'brand-feminina':'Brand Collection · Feminino',
     'brand-masculina':'Brand Collection · Masculino',
     'body-feminina':'Body Lotion · Feminino',
@@ -1405,7 +1411,9 @@
   };
 
   const nomeCategoriaCurta = {
-    'arabes':'Árabes',
+    'attar-masculino':'Masculino',
+    'attar-feminino':'Feminino',
+    'attar-unissex':'Unissex',
     'brand-feminina':'Feminino',
     'brand-masculina':'Masculino',
     'body-feminina':'Body Lotion · Feminino',
@@ -1414,12 +1422,23 @@
   };
 
   const produtos = [
-    { nome:"Club de Nuit Man", cat:"importados", novidade:true, ml:"105ml", preco:389.90, desc:"Cítrico amadeirado, com limão, notas frutadas e fundo de musk e madeiras.", estoque:"disponivel", foto:"fotos/clubdenuitman.jpeg" },
-    { nome:"La Voie", cat:"importados", novidade:false, ml:"100ml", preco:389.90, desc:"Floral amadeirado, com pera, bergamota e flores brancas.", estoque:"disponível", foto:"fotos/lavoie.jpeg" },
-    { nome:"Club de Nuit Woman", cat:"importados", novidade:true, ml:"105ml", preco:389.90, desc:"Floral frutado, com cítricos, flores e fundo de patchouli.", estoque:"disponivel", foto:"fotos/clubdenuitwoman.jpg" },
-    { nome:"Brand Collection 387 - The Monst Wanted", cat:"brand-masculina", novidade:false, ml:"25ml", preco:89.90, desc:"Âmbar especiado, com cardamomo e fundo amadeirado.", estoque:"disponivel", foto:"fotos/brand387.jpeg" },
-    { nome:"Rouh", cat:"importados", novidade:false, ml:"100ml", preco:389.90, desc:"Oriental amadeirado, de perfil quente e envolvente.", estoque:"disponivel", foto:"" },
-    { nome:"Eqaab", cat:"arabes", novidade:false, ml:"100ml", preco:389.90, desc:"Oriental especiado, com fundo marcante.", estoque:"disponivel", foto:"" },
+    { nome:"Club de Nuit Man", cat:"importados", novidade:true, ml:"105ml", preco:389.90, desc:"Cítrico amadeirado, com limão, notas frutadas e fundo de musk e madeiras.", estoque:"disponivel", foto:"fotos/clubdenuitman.jpeg" } ,
+    { nome:"La Voie", cat:"importados", novidade:false, ml:"100ml", preco:389.90, desc:"Floral amadeirado, com pera, bergamota e flores brancas.", estoque:"disponível", foto:"fotos/lavoie.jpeg" } ,
+    { nome:"Club de Nuit Woman", cat:"importados", novidade:true, ml:"105ml", preco:389.90, desc:"Floral frutado, com cítricos, flores e fundo de patchouli.", estoque:"disponivel", foto:"fotos/clubdenuitwoman.jpg" } ,
+    { nome:"Brand Collection 387 - The Monst Wanted", cat:"brand-masculina", novidade:false, ml:"25ml", preco:89.90, desc:"Âmbar especiado, com cardamomo e fundo amadeirado.", estoque:"disponivel", foto:"fotos/brand387.jpeg" } ,
+    { nome:"Attar Árabe em Óleo - Equaab", cat:"attar-masculino", novidade:false, ml:"12ml", preco:389.90, desc:"Manga suculenta e groselha negra se encontram com o delicado jasmim, enquanto sândalo cremoso e baunilha envolvem a fragrância em um fundo quente, sofisticado e marcante.", estoque:"disponivel", foto:"fotos/equaab.jpeg" } ,
+    { nome:"Attar Árabe em Óleo - Rouh" , cat:"attar-masculino", novidade:false, ml:"20ml", preco:389.90, desc:"Notas ambaradas e nuances orientais revelam uma fragrância profunda, quente e sofisticada." , estoque:"disponivel" , foto:"fotos/rouh.jpeg"} ,
+    { nome:"Attar Árabe em Óleo - Sabah Al Ward" , cat:"attar-feminino", novidade:false, ml:"12ml", preco:389.90, desc:"A vivacidade da mandarina e da pimenta rosa encontra a elegância das flores brancas sobre um fundo envolvente de baunilha e fava tonka." , estoque:"disponivel" , foto:"fotos/sabah.jpeg"} ,
+    { nome:"Attar Árabe em Óleo - Watani" , cat:"attar-feminino", novidade:false, ml:"12ml", preco:389.90, desc:"Uma fragrância envolvente que combina doçura frutada e nuances cremosas. Seu aroma costuma remeter a frutas maduras, com um toque sofisticado que evolui na pele ao longo do dia" , estoque:"disponivel" , foto:"fotos/watani.jpeg"} ,
+    { nome:"Attar Árabe em Óleo - Hamidi Saji" , cat:"attar-unissex", novidade:false, ml:"20ml", preco:389.90, desc:"Bergamota, âmbar, rosa e baunilha se unem a notas profundas de patchouli e ládano, criando uma fragrância amadeirada floral almiscarada, quente e intensamente sedutora." , estoque:"disponivel" , foto:"fotos/saji.jpeg"} ,
+    { nome:"Attar Árabe em Óleo - Hamidi Rayan" , cat:"attar-unissex", novidade:false, ml:"20ml", preco:389.90, desc:"Bergamota, maçã, tangerina e groselha negra se unem a um coração floral e notas profundas de patchouli e baunilha, criando uma fragrância oriental frutal, fresca e elegantemente envolvente." , estoque:"disponivel" , foto:"fotos/rayan.jpeg"} ,
+    { nome:"Attar Árabe em Óleo - Hamidi Afraa" , cat:"attar-unissex", novidade:false, ml:"20ml", preco:389.90, desc:"Bergamota, pera, lichia e açafrão se unem a um coração de rosa e incenso sobre uma base profunda de agarwood e patchouli, criando uma fragrância oriental de perfil floral exótico, quente e luxuosamente marcante." , estoque:"disponivel" , foto:"fotos/afraa.jpeg"} ,
+    { nome:"Attar Árabe em Óleo - Hamidi Tuleen" , cat:"attar-masculino", novidade:false, ml:"20ml", preco:389.90, desc:"Âmbar, rosa e toranja se unem a um coração de pimenta preta, açafrão e raiz de orris sobre um fundo de sândalo, almíscar e baunilha, criando uma fragrância oriental amadeirada, luxuosa e misteriosamente envolvente." , estoque:"disponivel" , foto:"fotos/tuleen.jpeg"} ,
+    { nome:"Attar Árabe em Óleo - Durrant Al Aroos" , cat:"attar-feminino", novidade:false, ml:"20ml", preco:389.90, desc:"Orquídea, baunilha, fava tonka e almíscar se unem a notas de sândalo e nuances de patchouli, criando uma fragrância oriental floral intensamente doce, sofisticada e romanticamente envolvente." , estoque:"disponivel" , foto:"fotos/durrat.jpeg"} ,
+    { nome:"Attar Árabe em Óleo - Al Wataniah" , cat:"attar-masculino", novidade:false, ml:"12ml", preco:389.90, desc:"Lavanda, limão, baunilha negra e patchouli se unem em uma fragrância em óleo altamente concentrada, intensa, elegante e naturalmente envolvente." , estoque:"disponivel" , foto:"fotos/wataniah.jpeg"} ,
+    { nome:"Attar Árabe em Óleo - Hamidi Saji" , cat:"attar-masculino", novidade:false, ml:"20ml", preco:389.90, desc:"Bergamota, âmbar, rosa e baunilha se unem a notas profundas de patchouli e ládano, criando uma fragrância amadeirada floral almiscarada, quente e intensamente sedutora." , estoque:"disponivel" , foto:"fotos/saji.jpeg"} ,
+    { nome:"Attar Árabe em Óleo - Hamidi Rayan" , cat:"attar-masculino", novidade:false, ml:"20ml", preco:389.90, desc:"Bergamota, maçã, tangerina e groselha negra se unem a um coração floral e notas profundas de patchouli e baunilha, criando uma fragrância oriental frutal, fresca e elegantemente envolvente." , estoque:"disponivel" , foto:"fotos/rayan.jpeg"} ,
+    { nome:"Attar Árabe em Óleo - Hamidi Afraa" , cat:"attar-feminino", novidade:false, ml:"20ml", preco:389.90, desc:"Bergamota, pera, lichia e açafrão se unem a um coração de rosa e incenso sobre uma base profunda de agarwood e patchouli, criando uma fragrância oriental de perfil floral exótico, quente e luxuosamente marcante." , estoque:"disponivel" , foto:"fotos/afraa.jpeg"} ,
     { nome:"Brand Collection 007 - Dior J'adore" , cat: "brand-feminina" , novidade:false, ml:"25ml", preco: 89.90, desc:"Floral luminoso, com flores brancas e toque frutado.", estoque: "disponivel", foto:"fotos/brand_jadore_dior.jpg" } ,
     { nome:"Brand Collection 015 - Lancôme Idôle" , cat: "brand-feminina" , novidade:false, ml:"25ml", preco: 89.90 , desc:"Floral fresco, com rosa e fundo limpo de musk." , estoque: "disponivel", foto: "fotos/brand015idole.jpg" } ,
     { nome:"Brand Collection 021 - Chanel Coco Mademoiselle" , cat: "brand-feminina" , novidade:false, ml: "25ml", preco:89.90, desc:"Floral ambarado, com cítricos, rosa e patchouli." , estoque:"disponivel" , foto: "fotos/brand021coco.jpeg" } ,
