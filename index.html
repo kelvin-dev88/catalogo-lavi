@@ -212,10 +212,14 @@
     top:0; right:0;
     z-index:15;
     height:100%;
+    height:100dvh;
+    overflow-y:auto;
+    overscroll-behavior-y:contain;
+    -webkit-overflow-scrolling:touch;
     width:min(280px, 78vw);
     background: var(--cream);
     border-left:1px solid var(--gold-line);
-    padding: 96px 28px 28px;
+    padding: 96px 28px calc(32px + env(safe-area-inset-bottom));
     display:flex;
     flex-direction:column;
     align-items:flex-start;
@@ -224,7 +228,10 @@
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     box-shadow: -12px 0 40px rgba(33,26,17,0.16);
   }
-  nav.filters.open{ transform: translateX(0); }
+  nav.filters > *{ flex-shrink:0; }
+  nav.filters.open{ transform: translateX(0); z-index:36; }
+  #menuOverlay.open{ z-index:35; }
+  .menu-toggle.open{ z-index:40; }
 
   .menu-overlay{
     position:fixed; inset:0;
@@ -761,15 +768,44 @@
     border-radius:999px;
     padding:11px 18px 11px 42px;
     outline:none;
-    box-shadow: 0 2px 10px rgba(42,35,28,0.06);
+    box-shadow:none;
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
   }
   .search-box input:focus{
     border-color: var(--ink);
-    box-shadow: 0 4px 18px rgba(42,35,28,0.12);
+    box-shadow:none;
   }
   .search-box input::placeholder{ color: rgba(58,46,31,0.45); }
 
+  .search-note{font:12px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);margin:10px 12px 0;}
+  .catalog-heading{margin:0 0 24px;}
+  .catalog-heading h2{font-size:22px;margin:0 0 8px;color:var(--ink);}
+  .catalog-heading p,.cart-notice{font:13px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);}
+  #limparBusca{font:inherit;border:1px solid var(--gold-line);border-radius:20px;padding:8px 16px;background:var(--paper);color:var(--ink);cursor:pointer;}
+  .atendimento-link{text-decoration:underline;text-underline-offset:3px;transition:background .2s ease;}
+  .sobre-info .atendimento-link:hover{background:var(--paper);color:var(--ink);}
+  .atendimento-link:focus-visible{outline:2px solid var(--ink);outline-offset:3px;}
+  .cart-notice{margin-top:16px;}
+  .catalog-controls{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:24px;align-items:flex-end;}
+  .catalog-controls label{flex:1 1 140px;min-width:0;font:13px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);}
+  .catalog-controls select{display:block;width:100%;min-height:44px;margin-top:6px;padding:10px 12px;border:1px solid var(--gold-line);border-radius:12px;background:var(--paper);color:var(--text);font:inherit;}
+  .catalog-controls select:focus-visible{outline:2px solid var(--ink);outline-offset:2px;}
+  #limparFiltros{padding:10px 14px;min-height:44px;background:var(--paper);border:1px solid var(--gold-line);border-radius:12px;color:var(--ink);cursor:pointer;}
+  .search-wrap{position:relative;max-width:640px;}
+  .search-box{background:var(--paper);border:1px solid var(--gold-line);border-radius:999px;box-shadow:none;}
+  .search-box:focus-within{border-color:var(--ink);}
+  .search-box input{min-width:0;flex:1;border:0;background:transparent;box-shadow:none;padding-right:8px;font-size:16px;}
+  .search-box input:focus{box-shadow:none;}
+  .filter-trigger{display:flex;align-items:center;gap:6px;min-height:44px;flex-shrink:0;margin-right:6px;padding:8px 12px;border:0;border-left:1px solid var(--gold-line);background:transparent;color:var(--ink);font:13px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;cursor:pointer;}
+  .filter-trigger svg{position:static;width:18px;height:18px;opacity:1;}
+  .filter-trigger:focus-visible{outline:2px solid var(--ink);outline-offset:1px;border-radius:16px;}
+  .filter-dot{width:7px;height:7px;border-radius:50%;background:var(--rust);}
+  .filter-dot[hidden]{display:none;}
+  #painelFiltros{position:absolute;top:calc(100% + 10px);left:24px;right:24px;z-index:10;margin:0;padding:20px;background:var(--paper);border:1px solid var(--gold-line);border-radius:18px;box-shadow:0 12px 32px rgba(42,35,28,.18);}
+  #painelFiltros[hidden]{display:none;}
+  .filter-panel-title{width:100%;margin:0 0 4px;font-size:18px;color:var(--ink);}
+  .filter-panel-actions{display:flex;justify-content:flex-end;gap:10px;width:100%;margin-top:6px;}
+  #aplicarFiltros{min-height:44px;padding:10px 20px;border:1px solid var(--ink);border-radius:12px;background:var(--ink);color:var(--paper);font:inherit;cursor:pointer;}
   /* ===== GRID ===== */
   main{ max-width:1080px; margin:0 auto; padding: 34px 24px 90px; }
   .grid{
@@ -777,7 +813,9 @@
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 28px 22px;
   }
+  .card:focus-visible{outline:2px solid var(--ink);outline-offset:4px;}
   .card{
+    cursor:pointer;
     display:flex;
     flex-direction:column;
     align-items:stretch;
@@ -1105,7 +1143,7 @@
     margin:0 auto;
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   }
-  .sobre-info span{
+  .sobre-info span, .sobre-info .atendimento-link{
     min-height:76px;
     display:flex;
     align-items:center;
@@ -1171,7 +1209,7 @@
       grid-template-columns:1fr;
       gap:9px;
     }
-    .sobre-info span{
+    .sobre-info span, .sobre-info .atendimento-link{
       min-height:0;
       padding:14px 16px;
     }
@@ -1190,23 +1228,28 @@
     content:"";
     position:absolute;
     z-index:1;
-    top:1%;
+    top:3%;
     left:50%;
-    width:min(78vw,560px);
-    height:34%;
+    width:clamp(270px,68vw,450px);
+    aspect-ratio:1 / 1.28;
     transform:translateX(-50%);
-    background:radial-gradient(ellipse at center, rgba(255,248,235,.34) 0%, rgba(255,248,235,.16) 38%, rgba(255,248,235,0) 74%);
-    filter:blur(10px);
+    background:radial-gradient(ellipse at center, rgba(19,24,17,.58) 0%, rgba(19,24,17,.32) 46%, rgba(19,24,17,0) 74%);
+    filter:blur(14px);
     pointer-events:none;
   }
   .hero-logo{
     top:6.5%;
     width:clamp(215px,54vw,330px);
-    filter:drop-shadow(0 2px 3px rgba(255,248,235,.35)) drop-shadow(0 9px 24px rgba(0,0,0,.42));
+    filter:brightness(1.16) drop-shadow(0 2px 4px rgba(0,0,0,.3)) drop-shadow(0 8px 20px rgba(0,0,0,.38));
   }
   .hero-smoke{
     top:7%;
-    opacity:.72;
+    opacity:.26;
+    -webkit-mask-image:linear-gradient(to bottom, #000 0%, rgba(0,0,0,.65) 42%, transparent 78%);
+    mask-image:linear-gradient(to bottom, #000 0%, rgba(0,0,0,.65) 42%, transparent 78%);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hero-smoke .smoke-blob{animation:none;}
   }
 
   .sobre{
@@ -1251,6 +1294,22 @@
     .sobre h2{ font-size:21px; }
   }
 
+/* Navegação e busca acessíveis durante a rolagem */
+  .menu-toggle{width:44px;height:44px;padding:0;border-radius:50%;}
+  .menu-icon{display:flex;flex-direction:column;gap:5px;}
+  .search-wrap{position:sticky;top:76px;z-index:19;padding:10px 24px;background:transparent;border:0;border-radius:0;box-shadow:none;}
+  #painelFiltros{max-height:calc(100dvh - 160px);overflow-y:auto;overscroll-behavior:contain;}
+  .active-filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .active-filters[hidden]{display:none;}
+  .filter-chip,.empty-action{min-height:44px;padding:8px 14px;border:1px solid var(--gold-line);border-radius:22px;background:var(--paper);color:var(--ink);font:13px/1.4 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;cursor:pointer;}
+  .filter-chip:focus-visible,.empty-action:focus-visible{outline:2px solid var(--ink);outline-offset:3px;}
+  .sem-resultado p{margin:0 0 16px;}
+  .empty-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;}
+  @media(max-width:480px){.search-wrap{padding:8px 12px;}.menu-toggle{right:12px;}.cart-toggle{left:12px;}}
+  .card-footer{flex-wrap:wrap;}
+  .wpp-btn{flex:1 1 145px;min-width:0;min-height:44px;padding:9px 10px;font-size:11px;line-height:1.35;letter-spacing:0.01em;text-transform:none;white-space:normal;}
+  .modal-add{min-height:44px;line-height:1.35;letter-spacing:0.01em;text-transform:none;}
+  @media(max-width:600px){.wpp-btn{flex:0 1 auto;width:100%;}}
 </style>
 </head>
 <body>
@@ -1278,28 +1337,35 @@
   </div>
 </section>
 
-<button class="menu-toggle" id="menuToggle" aria-label="Abrir categorias">
-  <span></span><span></span><span></span>
+<button class="menu-toggle" id="menuToggle" aria-label="Abrir categorias" aria-expanded="false" aria-controls="filters">
+  <div class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></div>
 </button>
 <div class="menu-overlay" id="menuOverlay"></div>
 
 <nav class="filters" id="filters">
   <button class="filter-btn active" data-cat="novidades">Novidades</button>
-  
-  <span class="filter-group-label">Perfumes em óleo - Attar Árabe</span>
-  <button class="filter-btn filter-btn-sub" data-cat="attar-masculino">Masculino</button>
-  <button class="filter-btn filter-btn-sub" data-cat="attar-feminino">Feminino</button>
-  <button class="filter-btn filter-btn-sub" data-cat="attar-unissex">Unissex</button>
 
-  <span class="filter-group-label">Brand Collection</span>
-  <button class="filter-btn filter-btn-sub" data-cat="brand-feminina">Feminino</button>
-  <button class="filter-btn filter-btn-sub" data-cat="brand-masculina">Masculino</button>
+  <span class="filter-group-label">Perfumes Árabes</span>
+  <button class="filter-btn filter-btn-sub" data-cat="arabes-feminino">Feminino</button>
+  <button class="filter-btn filter-btn-sub" data-cat="arabes-masculino">Masculino</button>
+
+  <span class="filter-group-label">Attar Árabe — Perfumes em óleo</span>
+  <button class="filter-btn filter-btn-sub" data-cat="attar-feminino">Feminino</button>
+  <button class="filter-btn filter-btn-sub" data-cat="attar-masculino">Masculino</button>
+  <button class="filter-btn filter-btn-sub" data-cat="attar-unissex">Unissex</button>
 
   <span class="filter-group-label">Body Lotion</span>
   <button class="filter-btn filter-btn-sub" data-cat="body-feminina">Feminino</button>
   <button class="filter-btn filter-btn-sub" data-cat="body-masculina">Masculino</button>
 
-  <button class="filter-btn" data-cat="importados">Importados</button>
+  <span class="filter-group-label">Brand Collection — Perfumes 25 ml</span>
+  <button class="filter-btn filter-btn-sub" data-cat="brand-feminina">Feminino</button>
+  <button class="filter-btn filter-btn-sub" data-cat="brand-masculina">Masculino</button>
+
+  <span class="filter-group-label">Brand Collection — Perfumes 80/100 ml</span>
+  <button class="filter-btn filter-btn-sub" data-cat="brand-80-100-feminina">Feminino</button>
+  <button class="filter-btn filter-btn-sub" data-cat="brand-80-100-masculina">Masculino</button>
+
 </nav>
 
 <!-- Carrinho -->
@@ -1315,7 +1381,8 @@
     <span>Total</span>
     <span id="cartTotalValor"></span>
   </div>
-  <a class="cart-finalizar" id="cartFinalizar" href="#" target="_blank" rel="noopener" style="display:none;">Finalizar pelo WhatsApp</a>
+  <a class="cart-finalizar" id="cartFinalizar" href="#" target="_blank" rel="noopener" style="display:none;">Enviar pedido pelo WhatsApp</a>
+  <p class="cart-notice">O total corresponde aos produtos. Frete, pagamento e disponibilidade serão confirmados pelo WhatsApp.</p>
 </div>
 
 <!-- WhatsApp flutuante, para dúvidas gerais -->
@@ -1357,7 +1424,7 @@
       <p class="modal-desc" id="modalDesc"></p>
       <div class="modal-footer">
         <span class="modal-preco" id="modalPreco"></span>
-        <button class="modal-add" id="modalAdd">Adicionar</button>
+        <button class="modal-add" id="modalAdd">Adicionar ao carrinho</button>
       </div>
     </div>
   </div>
@@ -1370,11 +1437,38 @@
 <div class="search-wrap">
   <div class="search-box">
     <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="busca" placeholder="Buscar perfume pelo nome..." autocomplete="off">
+    <input type="search" id="busca" aria-label="Buscar em todo o catálogo" placeholder="Buscar perfume..." autocomplete="off">
+    <button type="button" id="abrirFiltros" class="filter-trigger" aria-expanded="false" aria-controls="painelFiltros">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      <span>Filtrar</span><span id="indicadorFiltros" class="filter-dot" aria-hidden="true" hidden></span>
+    </button>
+  </div>
+  <div class="catalog-controls" id="painelFiltros" role="region" aria-label="Filtros do catálogo" hidden>
+    <p class="filter-panel-title">Filtrar por preço</p>
+    <label for="filtroPreco">Preço
+      <select id="filtroPreco">
+        <option value="todos">Todos os preços</option>
+        <option value="ate100">Até R$ 100</option>
+        <option value="100a200">Acima de R$ 100 até R$ 200</option>
+        <option value="200a300">Acima de R$ 200 até R$ 300</option>
+        <option value="acima300">Acima de R$ 300</option>
+      </select>
+    </label>
+    <div class="filter-panel-actions">
+      <button type="button" id="limparFiltros">Limpar</button>
+      <button type="button" id="aplicarFiltros">Aplicar</button>
+    </div>
   </div>
 </div>
 
 <main>
+  <div class="catalog-heading">
+    <h2 id="categoriaAtual">Novidades</h2>
+    <p id="quantidadeProdutos" aria-live="polite"></p>
+    <button id="limparBusca" type="button" hidden>Limpar busca</button>
+    <div id="filtrosAtivos" class="active-filters" aria-label="Filtros aplicados" hidden></div>
+  </div>
+
   <div class="grid" id="grid"></div>
 </main>
 
@@ -1382,7 +1476,7 @@
   <h2>LAVI PERFUMES</h2>
   <p>Uma curadoria de fragrâncias importadas, árabes e Brand Collection, escolhidas para você encontrar a sua essência.</p>
   <div class="sobre-info">
-    <span>Para atendimento e pedidos, fale conosco pelo Whatsapp</span>
+    <a id="consultarEntrega" class="atendimento-link" target="_blank" rel="noopener">Para atendimento e pedidos, fale conosco pelo WhatsApp</a>
   </div>
 </div>
 
@@ -1398,16 +1492,21 @@
   const busca = document.getElementById('busca');
   let ativoCat = 'novidades';
   let termoBusca = '';
+  let faixaPreco = 'todos';
 
   const nomeCategoria = {
-    'attar-masculino':'Perfume em óleo - Attar Árabe . Masculino',
-    'attar-feminino':'Perfume em óleo - Attar Árabe . Feminino',
-    'attar-unissex':'Perfume em óleo - Attar Árabe . Unissex',
-    'brand-feminina':'Brand Collection · Feminino',
-    'brand-masculina':'Brand Collection · Masculino',
+    'novidades':'Novidades',
+    'attar-masculino':'Attar Árabe — Perfumes em óleo · Masculino',
+    'attar-feminino':'Attar Árabe — Perfumes em óleo · Feminino',
+    'attar-unissex':'Attar Árabe — Perfumes em óleo · Unissex',
+    'brand-feminina':'Brand Collection — Perfumes 25 ml · Feminino',
+    'brand-80-100-feminina':'Brand Collection — Perfumes 80/100 ml · Feminino',
+    'brand-masculina':'Brand Collection — Perfumes 25 ml · Masculino',
+    'brand-80-100-masculina':'Brand Collection — Perfumes 80/100 ml · Masculino',
     'body-feminina':'Body Lotion · Feminino',
     'body-masculina':'Body Lotion · Masculino',
-    'importados':'Importados'
+    'arabes-feminino':'Perfumes Árabes · Feminino',
+    'arabes-masculino':'Perfumes Árabes · Masculino',
   };
 
   const nomeCategoriaCurta = {
@@ -1415,16 +1514,28 @@
     'attar-feminino':'Feminino',
     'attar-unissex':'Unissex',
     'brand-feminina':'Feminino',
+    'brand-80-100-feminina':'Feminino',
     'brand-masculina':'Masculino',
+    'brand-80-100-masculina':'Masculino',
     'body-feminina':'Body Lotion · Feminino',
     'body-masculina':'Body Lotion · Masculino',
-    'importados':'Importados'
+    'arabes-feminino':'Feminino',
+    'arabes-masculino':'Masculino',
   };
 
   const produtos = [
-    { nome:"Club de Nuit Man", cat:"importados", novidade:true, ml:"105ml", preco:389.90, desc:"Cítrico amadeirado, com limão, notas frutadas e fundo de musk e madeiras.", estoque:"disponivel", foto:"fotos/clubdenuitman.jpeg" } ,
-    { nome:"La Voie", cat:"importados", novidade:false, ml:"100ml", preco:389.90, desc:"Floral amadeirado, com pera, bergamota e flores brancas.", estoque:"disponível", foto:"fotos/lavoie.jpeg" } ,
-    { nome:"Club de Nuit Woman", cat:"importados", novidade:true, ml:"105ml", preco:389.90, desc:"Floral frutado, com cítricos, flores e fundo de patchouli.", estoque:"disponivel", foto:"fotos/clubdenuitwoman.jpg" } ,
+    { nome:"Perfume Árabe - Attar Al Wesal", cat:"arabes-masculino", novidade:false, ml: "100ml", preco: 389.90, desc:"Oriental especiado, com pera, lavanda, canela e fundo de baunilha.", estoque:"disponivel", foto: "fotos/alwesal.jpeg"},
+    { nome:"Perfume Árabe - Wanted" , cat:"arabes-masculino" , novidade:false , ml:"100ml" , preco:389.90 , desc:"Um amadeirado especiado, com o calor do cardamomo, a intensidade do gengibre e um fundo envolvente de baunilha, toffee e madeiras." , estoque:"disponivel" , fotos:["fotos/wanted.jpeg" , "fotos/dtswanted.jpeg"]} ,
+    { nome:"Brand Collection 151 - Delina", cat:"brand-80-100-feminina", novidade:false, ml: "80ml", preco: 289.90, desc: "Floral frutado, com notas de frutas e rosa.", estoque: "disponivel", fotos: ["fotos/brand15180.jpeg" , "fotos/dts151.jpeg"]},
+    { nome:"Brand Collection 001 - Good Girl Tradicional", cat: "brand-80-100-feminina", novidade: false, ml: "80ml", preco: 289.90, desc: "Floral oriental, com flores brancas, fava tonka e cacau.", estoque: "disponivel", foto: "fotos/brand001.jpeg"},
+    { nome:"Brand Collection 021 - Coco Mademoiselle", cat: "brand-80-100-feminina", novidade: false, ml: "80ml", preco: 289.90, desc: "Floral ambarado, com cítricos, rosa e patchouli.", estoque: "disponivel", fotos: ["fotos/brand02180.jpeg" , "fotos/dtsbrand021.jpeg"]},
+    { nome:"Brand Collection 070 - Bleu de Chanel", cat: "brand-80-100-masculina", novidade: false, ml: "100ml", preco: 289.90, desc: "Amadeirado aromático, com cítricos, incenso e cedro.", estoque: "disponivel", foto: "fotos/brand070.jpeg"},
+    { nome:"Perfume Árabe - Tharwah Gold", cat: "arabes-feminino", novidade: false, ml: "100ml", preco: 389.90, desc: "Floral ambarado, com lavanda, jasmim e fundo de baunilha.", estoque: "disponivel", foto: "fotos/tharwah.jpeg"},
+    { nome:"Perfume Árabe - Ameerat Al Arab", cat: "arabes-feminino", novidade: false, ml: "100ml", preco: 389.90, desc: "Floral, com jasmim e fundo de musk e madeiras.", estoque: "disponivel", foto: "fotos/alarab.jpeg"},
+    { nome:"Perfume Árabe - Ameer Al Arab", cat: "arabes-masculino", novidade: false, ml: "100ml", preco: 389.90, desc: "Amadeirado especiado, com cardamomo, lavanda e sândalo.", estoque: "disponivel", foto: "fotos/ameer.jpeg"},
+    { nome:"Perfume Árabe - Club de Nuit Man", cat:"arabes-masculino", novidade:true, ml:"105ml", preco:389.90, desc:"Cítrico amadeirado, com limão, notas frutadas e fundo de musk e madeiras.", estoque:"disponivel", foto:"fotos/clubdenuitman.jpeg" } ,
+    { nome:"Perfume Árabe - La Voie", cat:"arabes-feminino", novidade:false, ml:"100ml", preco:389.90, desc:"Floral amadeirado, com pera, bergamota e flores brancas.", estoque:"disponível", fotos:["fotos/lavoie.jpeg" , "fotos/lavoier2.jpeg"]} ,
+    { nome:"Perfume Árabe - Club de Nuit Woman", cat:"arabes-feminino", novidade:true, ml:"105ml", preco:389.90, desc:"Floral frutado, com cítricos, flores e fundo de patchouli.", estoque:"disponivel", foto:"fotos/clubdenuitwoman.jpg" } ,
     { nome:"Brand Collection 387 - The Monst Wanted", cat:"brand-masculina", novidade:false, ml:"25ml", preco:89.90, desc:"Âmbar especiado, com cardamomo e fundo amadeirado.", estoque:"disponivel", foto:"fotos/brand387.jpeg" } ,
     { nome:"Attar Árabe em Óleo - Equaab", cat:"attar-masculino", novidade:false, ml:"12ml", preco:389.90, desc:"Manga suculenta e groselha negra se encontram com o delicado jasmim, enquanto sândalo cremoso e baunilha envolvem a fragrância em um fundo quente, sofisticado e marcante.", estoque:"disponivel", foto:"fotos/equaab.jpeg" } ,
     { nome:"Attar Árabe em Óleo - Rouh" , cat:"attar-masculino", novidade:false, ml:"20ml", preco:389.90, desc:"Notas ambaradas e nuances orientais revelam uma fragrância profunda, quente e sofisticada." , estoque:"disponivel" , foto:"fotos/rouh.jpeg"} ,
@@ -1445,62 +1556,62 @@
     { nome:"Brand Collection 039 - Chanel Chance" , cat: "brand-feminina" , novidade:false , ml:"25ml" , preco: 89.90 , desc:"Chipre floral, com frescor especiado e fundo cremoso." , estoque: "disponivel" , foto: "fotos/brand039.jpeg" } ,
     { nome:"Brand Collection 059 - Valentino Valentina Assoluto", cat: "brand-feminina" , novidade:false , ml:"25ml" , preco:89.90, desc:"Floral oriental, com notas florais e fundo quente." , estoque: "disponivel", foto: "fotos/brand059.jpeg" } ,
     { nome:"Brand Collection 063 - Giorgio Armani Sí", cat: "brand-feminina" , novidade: false , ml:"25ml" , preco: 89.90 , desc:"Frutado floral, com toque de cassis e fundo amadeirado." , estoque: "disponivel" , foto: "fotos/brand063.jpeg" } , 
-    { nome:"Brand Collection 076 - Lancôme La Vie Est Belle" , cat :"brand-feminina" , novidade: false , ml:"25ml" , preco: 89.90 , desc:"Floral gourmand, com frutas, flores e base adocicada." , estoque: "disponivel" , foto : "fotos/brand076.jpeg" } , 
-    { nome:"Brand Collection 087 - Paco Rabanne Olympéa" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco: 89.90 , desc:"Âmbar floral, com notas salgadas e baunilha." , estoque : "disponivel" , foto: "fotos/brand087.jpeg" } ,
-    { nome:"Brand Collection 136 - Jean Paul Gaultier Scandal " , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 89.90 , desc:"Floral adocicado, com cítricos e mel." , estoque : "disponivel" , foto: "fotos/brand136.jpeg" } , 
-    { nome:"Brand Collection 151 - Parfums de Marly Delina" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 89.90 , desc:"Floral frutado, com notas de frutas e rosa." , estoque : " disponivel" , foto: "fotos/brand151.jpeg" } , 
-    { nome:"Brand Collection 163 - Lancôme Hypnôse" , cat: "brand-feminina" , novidades:false , ml: "25ml" ,preco: 89.90 , desc:"Âmbar baunilhado, com flores e fundo cremoso." , estoque: "disponivel" , foto: "fotos/brand163.2.jpeg" } , 
-    { nome:"Brand Collection 341 - Chloé Nomade" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 89.90 , desc:"Chipre floral, com frésia e musgo de carvalho." , estoque: "disponivel" , foto: "fotos/brand341.jpeg" } , 
-    { nome:"Brand Collection 382 - Givenchy L'Interdit" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 89.90, desc:"Floral branco, com toque amadeirado." , estoque: "disponivel" , fotos:["fotos/brand382.jpeg" , "fotos/382.jpeg"]} , 
-    { nome:"Brand Collection 445 - Prada Paradoxe" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco: 89.90 , desc:"Floral ambarado, com flores brancas e musk." , estoque:"disponivel" , foto: "fotos/brand445.jpeg" } , 
-    { nome:"Brand Collection 455 - Narciso Rodriguez For Her" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco: 89.90, desc:"Floral almiscarado, com rosa, musk e fundo amadeirado." , estoque: "disponivel" , foto: "fotos/brand455.jpeg" } , 
-    { nome:"Brand Collection 003 - Elizabeth Arden Red Door" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco:89.90 , desc:"Floral clássico, com cítricos, rosa, jasmim e fundo amadeirado." , estoque: "disponivel" , foto: "fotos/brand003.jpeg" } , 
-    { nome:"Brand Collection 069 - Lancôme La Nuit Trésor" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 89.90 , desc:"Floral gourmand, com rosa e fundo de baunilha." , estoque: "disponivel" , foto: "fotos/brand0692.jpeg"} , 
-    { nome:"Brand Collection 093 - Dolce & Gabbana Light Blue" , cat: "brand-feminina" , novidades:false , ml: "25ml" , preco: 89.90 , desc:"Floral frutado fresco, com maçã verde, cedro e jasmim." , estoque: "disponivel" , foto: "fotos/brand093.jpeg" } , 
-    { nome:"Brand Collection 188 - Giorgio Armani My Way" , cat: "brand-feminina" , novidades: false , ml: "25ml" , preco:89.90 , desc:"Floral branco, com flores luminosas e baunilha." , estoque:"disponivel" , foto: "fotos/brand188.jpeg" } ,
-    { nome:"Brand Collection 234 - Bvlgari Petits et Mamans" , cat: "brand-feminina" , novidades:false ,ml: "25ml" , preco:89.90 , desc:"Suave e atalcado, com camomila e baunilha." , estoque: "disponivel" , foto: "fotos/brand234.jpeg" } ,
-    { nome:"Brand Collection 297 - Carolina Herrera Very Good Girl" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco: 119.90 , desc:"Floral frutado, com frutas vermelhas, rosa e madeiras." , estoque: "disponivel" , foto: "fotos/brand297.jpeg" } , 
-    { nome:"Brand Collection 303 - Dolce & Gabbana Devotion" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco:89.90, desc:"Gourmand, com limão cristalizado, flor de laranjeira e baunilha." , estoque: "disponivel" , foto: "fotos/brand303.jpeg" } , 
-    { nome:"Brand Collection 332 - Carolina Herrera Good Girl Glam", cat: "brand-feminina" , novidades:false , ml:"25ml" , preco:119.90 , desc:"Floral amadeirado, com notas frutadas e flores." , estoque:"disponivel" , foto: "fotos/brand332.jpeg" } , 
-    { nome:"Brand Collection 420 - D'Or Étoile (infantil)" , cat: "brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Suave e frutado, com pera verde e flores delicadas." , estoque:"disponivel" , foto: "fotos/brand420.jpeg" } ,
-    { nome:"Brand Collection 435 - Burberry Goddess" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Baunilhado aromático, com lavanda e diferentes facetas de baunilha." , estoque:"disponivel" , foto: "fotos/brand435.jpeg" } ,
-    { nome:"Brand Collection 438 - Scandal  Absolu" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral quente, com tuberosa, figo preto e sândalo." , estoque:"disponivel" , foto:"fotos/brand438.jpeg" } ,
-    { nome:"Brand Collection 351 - Versace Dylan Turquoise Pour Famme" , cat:"brand-feminina" , novidades:false, ml:"25ml" ,  preco:89.90 , desc:"Floral frutado, com limão, goiaba e musk." , estoque:"disponivel" , fotos:["fotos/brand351.jpeg" , "fotos/351.jpeg"]} ,
-    { nome:"Brand Collection 031 - Chanel Chance Trandé" , cat:"brand-feminina" , novidades:false, ml:"25ml" , preco:89.90 , desc:"Floral delicado, com frutas leves e flores." , estoque: "disponivel" , foto: "fotos/brand031.jpeg" } ,
-    { nome:"Brand Collection 043 - Alien Thierry Mugler" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar floral, com jasmim, madeiras e âmbar." , estoque:"disponivel" , foto: "fotos/brand043.jpeg" } ,
-    { nome:"Brand Collection 324 - La Belle" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Frutado gourmand, com pera, jasmim e baunilha." , estoque:"disponivel" , foto:"fotos/brand324.jpeg" } , 
-    { nome:"Brand Collection 294 - L'interdit Rouge" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral especiado, com laranja sanguínea e notas quentes." , estoque:"disponivel" , fotos:["fotos/brand294.jpeg" , "fotos/294.jpeg"]} ,
+    { nome:"Brand Collection 076 - Lancôme La Vie Est Belle" , cat :"brand-feminina" , novidade: false , ml:"25ml" , preco: 89.90 , desc:"Floral gourmand, com frutas, flores e base adocicada." , estoque: "disponivel" , fotos : ["fotos/tbrand076.jpeg" , "fotos/dts076.jpeg"]} , 
+    { nome:"Brand Collection 087 - Paco Rabanne Olympéa" , cat: "brand-feminina" , novidade:false , ml:"25ml" , preco: 89.90 , desc:"Âmbar floral, com notas salgadas e baunilha." , estoque : "disponivel" , foto: "fotos/brand087.jpeg" } ,
+    { nome:"Brand Collection 136 - Jean Paul Gaultier Scandal " , cat: "brand-feminina" , novidade:false , ml: "25ml" , preco: 89.90 , desc:"Floral adocicado, com cítricos e mel." , estoque : "disponivel" , foto: "fotos/tbrand136.jpeg" } , 
+    { nome:"Brand Collection 151 - Parfums de Marly Delina" , cat: "brand-feminina" , novidade:false , ml: "25ml" , preco: 89.90 , desc:"Floral frutado, com notas de frutas e rosa." , estoque : " disponivel" , fotos: ["fotos/tbrand151.jpeg" , "fotos/dts15125.jpeg"]} , 
+    { nome:"Brand Collection 163 - Lancôme Hypnôse" , cat: "brand-feminina" , novidade:false , ml: "25ml" ,preco: 89.90 , desc:"Âmbar baunilhado, com flores e fundo cremoso." , estoque: "disponivel" , foto: "fotos/brand163.2.jpeg" } , 
+    { nome:"Brand Collection 341 - Chloé Nomade" , cat: "brand-feminina" , novidade:false , ml: "25ml" , preco: 89.90 , desc:"Chipre floral, com frésia e musgo de carvalho." , estoque: "disponivel" , fotos: ["fotos/tbrand341.jpeg" , "fotos/dts341.jpeg"]} , 
+    { nome:"Brand Collection 382 - Givenchy L'Interdit" , cat: "brand-feminina" , novidade:false , ml: "25ml" , preco: 89.90, desc:"Floral branco, com toque amadeirado." , estoque: "disponivel" , fotos:["fotos/brand382.jpeg" , "fotos/382.jpeg"]} , 
+    { nome:"Brand Collection 445 - Prada Paradoxe" , cat: "brand-feminina" , novidade:false , ml:"25ml" , preco: 89.90 , desc:"Floral ambarado, com flores brancas e musk." , estoque:"disponivel" , foto: "fotos/brand445.jpeg" } , 
+    { nome:"Brand Collection 455 - Narciso Rodriguez For Her" , cat: "brand-feminina" , novidade:false , ml:"25ml" , preco: 89.90, desc:"Floral almiscarado, com rosa, musk e fundo amadeirado." , estoque: "disponivel" , foto: "fotos/brand455.jpeg" } , 
+    { nome:"Brand Collection 003 - Elizabeth Arden Red Door" , cat: "brand-feminina" , novidade:false , ml: "25ml" , preco:89.90 , desc:"Floral clássico, com cítricos, rosa, jasmim e fundo amadeirado." , estoque: "disponivel" , foto: "fotos/brand003.jpeg" } , 
+    { nome:"Brand Collection 069 - Lancôme La Nuit Trésor" , cat: "brand-feminina" , novidade:false , ml: "25ml" , preco: 89.90 , desc:"Floral gourmand, com rosa e fundo de baunilha." , estoque: "disponivel" , foto: "fotos/tbrand069.jpeg"} , 
+    { nome:"Brand Collection 093 - Dolce & Gabbana Light Blue" , cat: "brand-feminina" , novidade:false , ml: "25ml" , preco: 89.90 , desc:"Floral frutado fresco, com maçã verde, cedro e jasmim." , estoque: "disponivel" , foto: "fotos/tbrand093.jpeg" } , 
+    { nome:"Brand Collection 188 - Giorgio Armani My Way" , cat: "brand-feminina" , novidade: false , ml: "25ml" , preco:89.90 , desc:"Floral branco, com flores luminosas e baunilha." , estoque:"disponivel" , foto: "fotos/brand188.jpeg" } ,
+    { nome:"Brand Collection 234 - Bvlgari Petits et Mamans" , cat: "brand-feminina" , novidade:false ,ml: "25ml" , preco:89.90 , desc:"Suave e atalcado, com camomila e baunilha." , estoque: "disponivel" , foto: "fotos/brand234.jpeg" } ,
+    { nome:"Brand Collection 297 - Carolina Herrera Very Good Girl" , cat: "brand-feminina" , novidade:false , ml:"25ml" , preco: 119.90 , desc:"Floral frutado, com frutas vermelhas, rosa e madeiras." , estoque: "disponivel" , foto: "fotos/brand297.jpeg" } , 
+    { nome:"Brand Collection 303 - Dolce & Gabbana Devotion" , cat: "brand-feminina" , novidade:false , ml:"25ml" , preco:89.90, desc:"Gourmand, com limão cristalizado, flor de laranjeira e baunilha." , estoque: "disponivel" , foto: "fotos/brand303.jpeg" } , 
+    { nome:"Brand Collection 332 - Carolina Herrera Good Girl Glam", cat: "brand-feminina" , novidade:false , ml:"25ml" , preco:119.90 , desc:"Floral amadeirado, com notas frutadas e flores." , estoque:"disponivel" , foto: "fotos/brand332.jpeg" } , 
+    { nome:"Brand Collection 420 - D'Or Étoile (infantil)" , cat: "brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Suave e frutado, com pera verde e flores delicadas." , estoque:"disponivel" , foto: "fotos/brand420.jpeg" } ,
+    { nome:"Brand Collection 435 - Burberry Goddess" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Baunilhado aromático, com lavanda e diferentes facetas de baunilha." , estoque:"disponivel" , foto: "fotos/brand435.jpeg" } ,
+    { nome:"Brand Collection 438 - Scandal  Absolu" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Floral quente, com tuberosa, figo preto e sândalo." , estoque:"disponivel" , foto:"fotos/brand438.jpeg" } ,
+    { nome:"Brand Collection 351 - Versace Dylan Turquoise Pour Famme" , cat:"brand-feminina" , novidade:false, ml:"25ml" ,  preco:89.90 , desc:"Floral frutado, com limão, goiaba e musk." , estoque:"disponivel" , fotos:["fotos/brand351.jpeg" , "fotos/351.jpeg"]} ,
+    { nome:"Brand Collection 031 - Chanel Chance Trandé" , cat:"brand-feminina" , novidade:false, ml:"25ml" , preco:89.90 , desc:"Floral delicado, com frutas leves e flores." , estoque: "disponivel" , foto: "fotos/brand031.jpeg" } ,
+    { nome:"Brand Collection 043 - Alien Thierry Mugler" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Âmbar floral, com jasmim, madeiras e âmbar." , estoque:"disponivel" , foto: "fotos/brand043.jpeg" } ,
+    { nome:"Brand Collection 324 - La Belle" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Frutado gourmand, com pera, jasmim e baunilha." , estoque:"disponivel" , foto:"fotos/brand324.jpeg" } , 
+    { nome:"Brand Collection 294 - L'interdit Rouge" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Floral especiado, com laranja sanguínea e notas quentes." , estoque:"disponivel" , fotos:["fotos/brand294.jpeg" , "fotos/294.jpeg"]} ,
     { nome:"Brand Collection 012 - La Vie Est Belle" , cat:"brand-feminina" , nonidades:false , ml:"25ml" , preco:89.90 , desc:"Floral gourmand, com pera, íris, pralinê e baunilha." , estoque:"disponivel" , foto:"fotos/brand012.jpeg" } ,  
-    { nome:"Brand Collection 159 - Libre de Yves Saint Laurent" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral aromático, com lavanda, cítricos e flores brancas." , estoque:"disponivel" , foto: "fotos/brand159.jpeg" } ,
-    { nome:"Brand Collection 415 - Paco Rabanne Fame Parfum" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral frutado, com manga, bergamota, jasmim e incenso." , estoque: "disponivel" , foto:"fotos/brand415.jpeg"} ,
-    { nome:"Brand Collection 210 - Paco Rabanne Pure Xs For Her" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral oriental, com flor de laranjeira, pêssego e baunilha." , estoque:"disponivel" , foto:"fotos/brand210.jpg" } , 
-    { nome:"Brand Collection 370 - Versace Pour Famme Dylan Purple" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral frutado, com pera, bergamota, frésia e musk." , estoque:"disponivel" , fotos:["fotos/brand370.jpeg" , "fotos/370.jpeg"]} ,
-    { nome:"Brand Collection 034 - 212VIP Rosé da Carolina Herrera" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Frutado floral, com champanhe e notas de frutas." , estoque:"disponivel" , foto:"fotos/brand034.jpg" } , 
-    { nome:"Brand Collection 428 - Fame Intense Paco Rabanne" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral amadeirado, com coco, jasmim e incenso." , estoque:"disponivel" , foto:"fotos/brand428.jpg" } , 
-    { nome:"Brand Collection 410 - Red Dulce & Gabbana" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral clássico, com frutas, flores e fundo amadeirado." , estoque:"disponivel" , fotos:["fotos/brand410.jpg" , "fotos/410.jpeg"] } ,
-    { nome:"Brand Collection 365 - Fame Paco Rabanne" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral cremoso, com manga, jasmim e incenso." , estoque:"disponivel" , foto:"fotos/brand365.jpeg"} , 
-    { nome:"Brand Collection 378 - Fame Blooming Pink Paco Rabanne" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral amadeirado, com facetas frutadas e musk." , estoque:"disponivel" , foto:"fotos/brand378.jpeg" } , 
-    { nome:"Brand Collection 366 - Angel Elixir Thierry Mugler" , cat:"brand-feminina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral gourmand, com pimenta rosa, jasmim e baunilha." , estoque:"disponivel" , foto:"fotos/brand366.jpeg" } ,
-    { nome:"Brand Collection 116 - Invictus Paco Rabanne" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aquático, com toranja, notas marinhas e madeiras." , estoque:"disponivel" , foto:"fotos/brand116.jpeg" } , 
-    { nome:"Brand Collection 070 - Bleu de Chanel" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com cítricos, incenso e cedro." , estoque:"disponivel" , foto:"fotos/brand070.jpeg" } , 
-    { nome:"Brand Collection 214 - Invictus Victory Paco Rabanne" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar amadeirado, com limão, lavanda, incenso e baunilha." , estoque:"disponivel" , foto:"fotos/brand214.jpeg" } , 
-    { nome:"Brand Collection 005 - 1 Million Paco Rabanne" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado especiado, com mandarina, canela e couro." , estoque:"disponivel" , foto:"fotos/brand005.jpeg" } , 
-    { nome:"Brand Collection 321 - Scandal Pour Homme Jean Paul Gaultier" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar amadeirado, com mandarina, caramelo e vetiver." , estoque:"disponivel" , foto:"fotos/brand321.jpeg" } , 
-    { nome:"Brand Collection 296 - Phantom Paco Rabanne" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Aromático amadeirado, com lavanda, limão e baunilha." , estoque:"disponivel" , foto:"fotos/brand296.jpeg" } , 
-    { nome:"Brand Collection 054 - Creed Aventus" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Chipre frutado, com abacaxi, bergamota e madeiras." , estoque:"disponivel" , foto:"fotos/brand054.jpeg" } , 
-    { nome:"Brand Collection 100 - Sauvage de Christian Dior" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Aromático, com bergamota, pimenta, lavanda e cedro." , estoque:"disponivel" , foto:"fotos/brand100.jpeg" } , 
-    { nome:"Brand Collection 190 - Animale For Men" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Oriental amadeirado, com limão, lavanda e couro." , estoque:"disponivel" , foto:"fotos/brand190.jpeg" } , 
-    { nome:"Brand Collection 325 - Le Male Le Parfum JeanPaul Gaultier" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar aromático, com cardamomo, lavanda e baunilha." , estoque:"disponivel" , fotos:["fotos/brand325.jpeg" , "fotos/325.jpeg"]} , // Para incluir outra foto, use a propriedade fotos descrita abaixo.
-    { nome:"Brand Collection 008 - 212 VIP Men Carolina Herrera" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com maracujá, hortelã e couro." , estoque:"disponivel" , foto:"fotos/brand008.jpeg" } , 
-    { nome:"Brand Collection 242 - Versace Eros" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com hortelã, maçã verde e baunilha." , estoque:"disponivel" , foto:"fotos/brand242.jpeg" } , 
-    { nome:"Brand Collection 153 - Le Male Jean PAul Gaultier" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar aromático, com hortelã, lavanda e cardamomo." , estoque:"disponivel" , fotos:["fotos/brand153.jpeg" , "fotos/153.jpeg"]} , 
-    { nome:"Brand Collection 224 - K by Dolce & Gabbana" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com cítricos e zimbro." , estoque:"disponivel" , foto:"fotos/brand224.jpeg" } , 
-    { nome:"Brand Collection 323 - Le Male Elixir Jean Paul Gaultier" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar aromático, com lavanda, hortelã e baunilha." , estoque:"disponivel" , fotos:["fotos/brand323.jpeg" , "fotos/323.jpeg"]} , 
-    { nome:"Brand Collection 250 - Azzaro Wanted" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado especiado, com limão, gengibre e hortelã." , estoque:"disponivel" , foto:"fotos/brand250.jpeg" } , 
-    { nome:"Brand Collection 433 - MYSLF Yves Saint Laurent" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com bergamota, flor de laranjeira e patchouli." , estoque:"disponivel" , foto:"fotos/brand433.jpeg" } , 
-    { nome:"Brand Collection 102 - 212 Men NYC Carolina herrera" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado fresco, com toranja, bergamota e gengibre." , estoque:"disponivel" , foto:"fotos/brand102.jpeg" } , 
-    { nome:"Brand Collection 366 - Angel Elixir Thierry Mugler" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Floral gourmand, com pimenta rosa, jasmim e baunilha." , estoque:"disponivel" , foto:"fotos/brand366.jpeg" } ,
-    { nome:"Brand Collection 066 - Silver Scent Intense Jacques Bogart" , cat:"brand-masculina" , novidades:false , ml:"25ml" , preco:89.90 , desc:"Âmbar amadeirado, com limão e flor de laranjeira." , estoque:"disponivel" , fotos:["fotos/brand066.jpeg","fotos/066.jpeg"]} ,
+    { nome:"Brand Collection 159 - Libre de Yves Saint Laurent" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Floral aromático, com lavanda, cítricos e flores brancas." , estoque:"disponivel" , foto: "fotos/brand159.jpeg" } ,
+    { nome:"Brand Collection 415 - Paco Rabanne Fame Parfum" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Floral frutado, com manga, bergamota, jasmim e incenso." , estoque: "disponivel" , foto:"fotos/brand415.jpeg"} ,
+    { nome:"Brand Collection 210 - Paco Rabanne Pure Xs For Her" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Floral oriental, com flor de laranjeira, pêssego e baunilha." , estoque:"disponivel" , foto:"fotos/brand210.jpg" } , 
+    { nome:"Brand Collection 370 - Versace Pour Famme Dylan Purple" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Floral frutado, com pera, bergamota, frésia e musk." , estoque:"disponivel" , fotos:["fotos/brand370.jpg" , "fotos/370.jpeg"]} ,
+    { nome:"Brand Collection 034 - 212VIP Rosé da Carolina Herrera" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Frutado floral, com champanhe e notas de frutas." , estoque:"disponivel" , foto:"fotos/brand034.jpg" } , 
+    { nome:"Brand Collection 428 - Fame Intense Paco Rabanne" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Floral amadeirado, com coco, jasmim e incenso." , estoque:"disponivel" , foto:"fotos/brand428.jpg" } , 
+    { nome:"Brand Collection 410 - Red Dulce & Gabbana" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Floral clássico, com frutas, flores e fundo amadeirado." , estoque:"disponivel" , fotos:["fotos/tbrand410.jpeg" , "fotos/410.jpeg"] } ,
+    { nome:"Brand Collection 365 - Fame Paco Rabanne" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Floral cremoso, com manga, jasmim e incenso." , estoque:"disponivel" , foto:"fotos/brand365.jpeg"} , 
+    { nome:"Brand Collection 378 - Fame Blooming Pink Paco Rabanne" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Floral amadeirado, com facetas frutadas e musk." , estoque:"disponivel" , foto:"fotos/brand378.jpeg" } , 
+    { nome:"Brand Collection 366 - Angel Elixir Thierry Mugler" , cat:"brand-feminina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Floral gourmand, com pimenta rosa, jasmim e baunilha." , estoque:"disponivel" , foto:"fotos/brand366.jpeg" } ,
+    { nome:"Brand Collection 116 - Invictus Paco Rabanne" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aquático, com toranja, notas marinhas e madeiras." , estoque:"disponivel" , foto:"fotos/brand116.jpeg" } , 
+    { nome:"Brand Collection 070 - Bleu de Chanel" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com cítricos, incenso e cedro." , estoque:"disponivel" , foto:"fotos/brand070.jpeg" } , 
+    { nome:"Brand Collection 214 - Invictus Victory Paco Rabanne" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Âmbar amadeirado, com limão, lavanda, incenso e baunilha." , estoque:"disponivel" , foto:"fotos/brand214.jpeg" } , 
+    { nome:"Brand Collection 005 - 1 Million Paco Rabanne" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado especiado, com mandarina, canela e couro." , estoque:"disponivel" , foto:"fotos/brand005.jpeg" } , 
+    { nome:"Brand Collection 321 - Scandal Pour Homme Jean Paul Gaultier" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Âmbar amadeirado, com mandarina, caramelo e vetiver." , estoque:"disponivel" , foto:"fotos/brand321.jpeg" } , 
+    { nome:"Brand Collection 296 - Phantom Paco Rabanne" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Aromático amadeirado, com lavanda, limão e baunilha." , estoque:"disponivel" , foto:"fotos/brand296.jpeg" } , 
+    { nome:"Brand Collection 054 - Creed Aventus" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Chipre frutado, com abacaxi, bergamota e madeiras." , estoque:"disponivel" , foto:"fotos/brand054.jpeg" } , 
+    { nome:"Brand Collection 100 - Sauvage de Christian Dior" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Aromático, com bergamota, pimenta, lavanda e cedro." , estoque:"disponivel" , foto:"fotos/brand100.jpeg" } , 
+    { nome:"Brand Collection 190 - Animale For Men" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Oriental amadeirado, com limão, lavanda e couro." , estoque:"disponivel" , foto:"fotos/brand190.jpeg" } , 
+    { nome:"Brand Collection 325 - Le Male Le Parfum JeanPaul Gaultier" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Âmbar aromático, com cardamomo, lavanda e baunilha." , estoque:"disponivel" , fotos:["fotos/brand325.jpeg" , "fotos/325.jpeg"]} , // Para incluir outra foto, use a propriedade fotos descrita abaixo.
+    { nome:"Brand Collection 008 - 212 VIP Men Carolina Herrera" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com maracujá, hortelã e couro." , estoque:"disponivel" , foto:"fotos/brand008.jpeg" } , 
+    { nome:"Brand Collection 242 - Versace Eros" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com hortelã, maçã verde e baunilha." , estoque:"disponivel" , foto:"fotos/brand242.jpeg" } , 
+    { nome:"Brand Collection 153 - Le Male Jean PAul Gaultier" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Âmbar aromático, com hortelã, lavanda e cardamomo." , estoque:"disponivel" , fotos:["fotos/brand153.jpeg" , "fotos/153.jpeg"]} , 
+    { nome:"Brand Collection 224 - K by Dolce & Gabbana" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com cítricos e zimbro." , estoque:"disponivel" , foto:"fotos/brand224.jpeg" } , 
+    { nome:"Brand Collection 323 - Le Male Elixir Jean Paul Gaultier" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Âmbar aromático, com lavanda, hortelã e baunilha." , estoque:"disponivel" , fotos:["fotos/brand323.jpeg" , "fotos/323.jpeg"]} , 
+    { nome:"Brand Collection 250 - Azzaro Wanted" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado especiado, com limão, gengibre e hortelã." , estoque:"disponivel" , foto:"fotos/brand250.jpeg" } , 
+    { nome:"Brand Collection 433 - MYSLF Yves Saint Laurent" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado aromático, com bergamota, flor de laranjeira e patchouli." , estoque:"disponivel" , foto:"fotos/brand433.jpeg" } , 
+    { nome:"Brand Collection 102 - 212 Men NYC Carolina herrera" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Amadeirado fresco, com toranja, bergamota e gengibre." , estoque:"disponivel" , foto:"fotos/brand102.jpeg" } , 
+    { nome:"Brand Collection 366 - Angel Elixir Thierry Mugler" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Floral gourmand, com pimenta rosa, jasmim e baunilha." , estoque:"disponivel" , foto:"fotos/brand366.jpeg" } ,
+    { nome:"Brand Collection 066 - Silver Scent Intense Jacques Bogart" , cat:"brand-masculina" , novidade:false , ml:"25ml" , preco:89.90 , desc:"Âmbar amadeirado, com limão e flor de laranjeira." , estoque:"disponivel" , fotos:["fotos/brand066.jpeg","fotos/066.jpeg"]} ,
     { nome:"Body Lotion 093 - Ligth Blue Dolce & Gabanna" , cat:"body-feminina" , novidade:false , ml:"200ml" , preco:89.90 , desc:"Floral frutado cítrico, com limão siciliano, maçã verde, bambu e um fundo leve de cedro e âmbar." , estoque:"disponivel" , foto:"fotos/body093.jpeg" } ,
     { nome:"Body Lotion 402 - Erba Pura Xerjoff" , cat:"body-feminina" , novidade:false , ml:"200ml" , preco:89.90, desc:"Oriental frutado, com uma explosão de frutas tropicais suculentas, laranja siciliana, limão e bergamota, amaciados por um fundo denso e confortável de baunilha de Madagascar e almíscar branco." , estoque:"disponivel" , foto:"fotos/body402.jpeg" } ,
     { nome:"Body Lotion 151 - Delina Parfums de Marly" , cat:"body-feminina" , novidade:false , ml:"200ml" , preco:89.90 , desc:"Floral frutado sofisticado, com notas marcantes de lichia, ruibarbo e rosa turca, envolvidas pela doçura da baunilha e pela cremosidade do almíscar e do cashmeran." , estoque:"disponivel" , foto:"fotos/body151.jpeg" } ,
@@ -1548,20 +1659,69 @@
     return v.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
   }
 
+  function normalizarTexto(texto){
+    return String(texto || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+  function chaveProduto(p){
+    return encodeURIComponent(JSON.stringify([p.nome, p.ml, p.cat]));
+  }
+  function nomeParaOrdenar(p){
+    return p.nome.replace(/^(?:Brand Collection|Body Lotion)\s+\d+\s*-\s*/i, '');
+  }
+  const prioridadeBrandFeminina = ['151','382','188','438','324','159','294','370'];
+  function ordemBrandFeminina(p){
+    const codigo = p.nome.match(/^Brand Collection\s+(\d+)/i);
+    const indice = codigo ? prioridadeBrandFeminina.indexOf(codigo[1]) : -1;
+    return indice < 0 ? prioridadeBrandFeminina.length : indice;
+  }
+  function compararProdutos(a,b){
+    if(ativoCat === 'brand-feminina' && !termoBusca){
+      const prioridade = ordemBrandFeminina(a) - ordemBrandFeminina(b);
+      if(prioridade) return prioridade;
+    }
+    return nomeParaOrdenar(a).localeCompare(nomeParaOrdenar(b), 'pt-BR', {sensitivity:'base'}) || a.ml.localeCompare(b.ml, 'pt-BR', {numeric:true});
+  }
+  function obterResultado(){
+    const palavras = normalizarTexto(termoBusca).trim().split(/\s+/).filter(Boolean);
+    return produtos.filter(p => {
+      const preco = p.preco;
+      if(faixaPreco === 'ate100' && preco > 100) return false;
+      if(faixaPreco === '100a200' && !(preco > 100 && preco <= 200)) return false;
+      if(faixaPreco === '200a300' && !(preco > 200 && preco <= 300)) return false;
+      if(faixaPreco === 'acima300' && preco <= 300) return false;
+      if(palavras.length){
+        const texto = normalizarTexto(`${p.nome} ${nomeCategoria[p.cat] || ''} ${p.desc} ${p.ml}`);
+        return palavras.every(palavra => texto.includes(palavra));
+      }
+      return (ativoCat === 'novidades' ? p.novidade === true : p.cat === ativoCat);
+    }).sort(compararProdutos);
+  }
   function render(){
     grid.innerHTML = '';
-    const resultado = produtos.filter(p => {
-      const passaCategoria = ativoCat === 'novidades'
-        ? p.novidade === true
-        : p.cat === ativoCat;
-      const passaBusca = p.nome.toLowerCase().includes(termoBusca);
-      return termoBusca
-      ? passaBusca 
-      : passaCategoria;
-    });
+    const resultado = obterResultado();
+    document.getElementById('categoriaAtual').textContent = termoBusca ? `Resultados para “${busca.value.trim()}”` : nomeCategoria[ativoCat];
+    document.getElementById('quantidadeProdutos').textContent = `${resultado.length} ${resultado.length === 1 ? 'produto' : 'produtos'}`;
+    document.getElementById('limparBusca').hidden = !termoBusca;
+    const filtrosAtivos = faixaPreco !== 'todos';
+    document.getElementById('indicadorFiltros').hidden = !filtrosAtivos;
+    document.getElementById('abrirFiltros').setAttribute('aria-label', filtrosAtivos ? 'Filtrar: há filtros ativos' : 'Filtrar produtos');
+
+    const chips = document.getElementById('filtrosAtivos');
+    chips.replaceChildren();
+    const adicionarChip = (tipo, texto) => {
+      const botao = document.createElement('button');
+      botao.type = 'button'; botao.className = 'filter-chip';
+      botao.dataset.removerFiltro = tipo;
+      botao.textContent = `${texto} ×`;
+      botao.setAttribute('aria-label', `Remover filtro: ${texto}`);
+      chips.appendChild(botao);
+    };
+    if(faixaPreco !== 'todos') adicionarChip('preco', document.querySelector(`#filtroPreco option[value="${faixaPreco}"]`).textContent);
+    chips.hidden = !filtrosAtivos;
 
     if(resultado.length === 0){
-      grid.innerHTML = '<div class="sem-resultado">Nenhum produto encontrado.</div>';
+      const mensagem = termoBusca ? 'Nenhum produto encontrado para esta busca.' : 'Nenhum produto encontrado nesta categoria.';
+      grid.innerHTML = `<div class="sem-resultado"><p>${mensagem} Experimente outra busca ou ajuste os filtros.</p><div class="empty-actions">${filtrosAtivos ? '<button type="button" class="empty-action" data-empty="filtros">Limpar filtros</button>' : ''}${termoBusca ? '<button type="button" class="empty-action" data-empty="busca">Limpar busca</button>' : ''}<button type="button" class="empty-action" data-empty="categorias">Ver categorias</button></div></div>`;
       return;
     }
 
@@ -1569,6 +1729,9 @@
         const card = document.createElement('div');
         const esgotado = p.estoque === 'esgotado';
         card.className = 'card' + (esgotado ? ' esgotado' : '');
+        card.dataset.produto = chaveProduto(p);
+        card.tabIndex = 0;
+        card.setAttribute('aria-label', `Ver detalhes de ${p.nome}, ${p.ml}`);
         card.style.animationDelay = (i * 0.04) + 's';
 
         const selo = p.estoque === 'ultimas'
@@ -1577,8 +1740,8 @@
           ? '<span class="estoque-selo esgotado">Esgotado</span>'
           : '';
 
-        const botaoLabel = esgotado ? 'Esgotado' : 'Adicionar';
-        const botaoAtributo = esgotado ? 'disabled' : `data-add="${p.nome}"`;
+        const botaoLabel = esgotado ? 'Esgotado' : 'Adicionar ao carrinho';
+        const botaoAtributo = esgotado ? 'disabled' : `data-add="${chaveProduto(p)}"`;
 
         const fotos = fotosDoProduto(p);
         const ovalLabel = fotos.length ? '' : `
@@ -1596,7 +1759,7 @@
           : '';
 
         card.innerHTML = `
-          <div class="card-media" data-detalhe="${p.nome}" style="cursor:pointer;${estiloFoto}">
+          <div class="card-media" data-detalhe="${chaveProduto(p)}" style="cursor:pointer;${estiloFoto}">
             ${selo}
             ${ovalLabel}
             ${fotos.length > 1 ? `<button type="button" class="photo-arrow photo-prev" data-photo-dir="-1" aria-label="Foto anterior de ${p.nome}">‹</button>
@@ -1605,7 +1768,7 @@
           </div>
           ${tituloForaDaFoto}
           <p class="card-desc">${p.desc}</p>
-          <button class="card-more" type="button" data-detalhe="${p.nome}" aria-label="Ver detalhes de ${p.nome}">Ver mais</button>
+          <button class="card-more" type="button" data-detalhe="${chaveProduto(p)}" aria-label="Ver detalhes de ${p.nome}">Ver mais</button>
           <div class="card-footer">
             <span class="card-price">${formatarPreco(p.preco)}</span>
             <button class="wpp-btn" ${botaoAtributo}>${botaoLabel}</button>
@@ -1618,9 +1781,51 @@
     });
   }
 
-  busca.addEventListener('input', () => {
-    termoBusca = busca.value.trim().toLowerCase();
+  document.getElementById('filtrosAtivos').addEventListener('click', e => {
+    const chip = e.target.closest('[data-remover-filtro]');
+    if(!chip) return;
+    if(chip.dataset.removerFiltro === 'preco') faixaPreco = 'todos';
+    document.getElementById('filtroPreco').value = faixaPreco;
     render();
+    document.getElementById('abrirFiltros').focus();
+  });
+
+  const botaoFiltros = document.getElementById('abrirFiltros');
+  const painelFiltros = document.getElementById('painelFiltros');
+  function fecharFiltros(devolverFoco = false){
+    painelFiltros.hidden = true;
+    botaoFiltros.setAttribute('aria-expanded', 'false');
+    if(devolverFoco) botaoFiltros.focus();
+  }
+  botaoFiltros.addEventListener('click', () => {
+    if(!painelFiltros.hidden){ fecharFiltros(); return; }
+    document.getElementById('filtroPreco').value = faixaPreco;
+    painelFiltros.hidden = false;
+    botaoFiltros.setAttribute('aria-expanded', 'true');
+    document.getElementById('filtroPreco').focus();
+  });
+  document.getElementById('aplicarFiltros').addEventListener('click', () => {
+    faixaPreco = document.getElementById('filtroPreco').value;
+    render(); fecharFiltros(true);
+  });
+  function redefinirFiltros(){
+    faixaPreco = 'todos';
+    document.getElementById('filtroPreco').value = 'todos';
+  }
+  document.getElementById('limparFiltros').addEventListener('click', () => {
+    redefinirFiltros(); render(); fecharFiltros(true);
+  });
+  document.addEventListener('click', e => {
+    if(!painelFiltros.hidden && !painelFiltros.contains(e.target) && !botaoFiltros.contains(e.target)) fecharFiltros();
+  });
+
+  busca.addEventListener('input', () => {
+    termoBusca = normalizarTexto(busca.value.trim());
+    render();
+  });
+
+  document.getElementById('limparBusca').addEventListener('click', () => {
+    busca.value = ''; termoBusca = ''; render(); busca.focus();
   });
 
   function mudarFotoCard(media, fotos, dir){
@@ -1628,26 +1833,66 @@
     atualizarFoto(media, fotos, (atual + dir + fotos.length) % fotos.length);
   }
 
+  let toqueCard = null;
+  const cliquesBloqueados = new WeakMap();
+  grid.addEventListener('pointerdown', e => {
+    const card = e.target.closest('.card');
+    if(!card || !e.isPrimary) return;
+    cliquesBloqueados.delete(card);
+    toqueCard = {card, id:e.pointerId, x:e.clientX, y:e.clientY, scrollY:window.scrollY, moveu:false};
+  }, {passive:true});
+  grid.addEventListener('pointermove', e => {
+    if(!toqueCard || toqueCard.id !== e.pointerId) return;
+    if(Math.hypot(e.clientX - toqueCard.x, e.clientY - toqueCard.y) > 10){
+      toqueCard.moveu = true;
+    }
+  }, {passive:true});
+  function terminarToqueCard(e){
+    if(!toqueCard || toqueCard.id !== e.pointerId) return;
+    const arrastou = toqueCard.moveu || Math.hypot(e.clientX - toqueCard.x, e.clientY - toqueCard.y) > 10;
+    if(e.type === 'pointercancel' || arrastou || Math.abs(window.scrollY - toqueCard.scrollY) > 5){
+      cliquesBloqueados.set(toqueCard.card, Date.now() + 800);
+    }
+    toqueCard = null;
+  }
+  grid.addEventListener('pointerup', terminarToqueCard, {passive:true});
+  grid.addEventListener('pointercancel', terminarToqueCard, {passive:true});
+  grid.addEventListener('keydown', e => {
+    if(e.target !== e.target.closest('.card') || !['Enter',' '].includes(e.key)) return;
+    e.preventDefault();
+    const produto = produtos.find(p => chaveProduto(p) === e.target.dataset.produto);
+    if(produto) abrirModal(produto);
+  });
+
   grid.addEventListener('click', e => {
+    const acaoVazia = e.target.closest('[data-empty]');
+    if(acaoVazia){
+      if(acaoVazia.dataset.empty === 'filtros'){ redefinirFiltros(); render(); }
+      else if(acaoVazia.dataset.empty === 'busca'){ busca.value = ''; termoBusca = ''; render(); busca.focus(); }
+      else abrirMenu();
+      return;
+    }
+    const card = e.target.closest('.card');
+    if(card && e.detail !== 0 && (cliquesBloqueados.get(card) || 0) > Date.now()) return;
+    if(e.target.closest('button:disabled')) return;
     const seta = e.target.closest('[data-photo-dir]');
     if(seta){
       const media = seta.closest('.card-media');
-      const produto = produtos.find(p => p.nome === media.dataset.detalhe);
+      const produto = produtos.find(p => chaveProduto(p) === media.dataset.detalhe);
       if(produto) mudarFotoCard(media, fotosDoProduto(produto), Number(seta.dataset.photoDir));
       return;
     }
     const btnAdd = e.target.closest('[data-add]');
     if(btnAdd){
-      const produto = produtos.find(p => p.nome === btnAdd.dataset.add);
+      const produto = produtos.find(p => chaveProduto(p) === btnAdd.dataset.add);
       if(produto) adicionarAoCarrinho(produto);
       return;
     }
-    const media = e.target.closest('[data-detalhe]');
-    if(media){
-      if(media.dataset.ignorouClique) return;
-      const produto = produtos.find(p => p.nome === media.dataset.detalhe);
-      if(produto) abrirModal(produto);
-    }
+    const detalhe = e.target.closest('[data-detalhe]');
+    if(detalhe && detalhe.dataset.ignorouClique) return;
+    if(!card || e.target.closest('button, a, input, select') && !detalhe) return;
+    const produto = produtos.find(p => chaveProduto(p) === card.dataset.produto);
+    if(produto) abrirModal(produto);
   });
 
   filters.addEventListener('click', e => {
@@ -1656,19 +1901,39 @@
     filters.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     ativoCat = btn.dataset.cat;
+    fecharFiltros();
+    redefinirFiltros();
+    busca.value = '';
+    termoBusca = '';
     render();
     fecharMenu();
+    requestAnimationFrame(() => {
+      const barra = document.querySelector('.search-wrap');
+      const inicio = barra.getBoundingClientRect().top + window.scrollY - 76;
+      window.scrollTo({top:Math.max(0, inicio), behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
+    });
   });
 
   const menuToggle = document.getElementById('menuToggle');
   const menuOverlay = document.getElementById('menuOverlay');
 
+  let menuScrollY = null;
+  let menuBodyStyle = '';
+
   function abrirMenu(){
-    if(!filters || !menuOverlay || !menuToggle) return;
+    if(!filters || !menuOverlay || !menuToggle || menuScrollY !== null) return;
+    menuScrollY = window.scrollY;
+    menuBodyStyle = document.body.style.cssText;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${menuScrollY}px`;
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+    fecharFiltros();
     filters.classList.add('open');
     menuOverlay.classList.add('open');
     menuToggle.classList.add('open');
     menuToggle.setAttribute('aria-label', 'Fechar categorias');
+    menuToggle.setAttribute('aria-expanded', 'true');
   }
 
   function fecharMenu(){
@@ -1677,6 +1942,16 @@
     menuOverlay.classList.remove('open');
     menuToggle.classList.remove('open');
     menuToggle.setAttribute('aria-label', 'Abrir categorias');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    if(menuScrollY !== null){
+      const scrollY = menuScrollY;
+      menuScrollY = null;
+      document.body.style.cssText = menuBodyStyle;
+      const scrollBehavior = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, scrollY);
+      document.documentElement.style.scrollBehavior = scrollBehavior;
+    }
   }
 
   if(menuToggle){
@@ -1691,7 +1966,23 @@
   }
 
   // ===== CARRINHO =====
-  let carrinho = {}; // { nome: { produto, qtd } }
+  const chaveCarrinho = 'lavi-carrinho-v1';
+  let carrinho = {};
+  try{
+    const salvo = JSON.parse(localStorage.getItem(chaveCarrinho) || '[]');
+    if(Array.isArray(salvo)) salvo.forEach(item => {
+      const id = String(item.id || '').replace('importados-feminino', 'arabes-feminino').replace('importados-masculino', 'arabes-masculino');
+      const produto = produtos.find(p => chaveProduto(p) === id);
+      if(produto && produto.estoque !== 'esgotado' && Number.isSafeInteger(item.qtd) && item.qtd > 0){
+        carrinho[id] = {produto, qtd:item.qtd};
+      }
+    });
+  }catch{}
+  function salvarCarrinho(){
+    try{
+      localStorage.setItem(chaveCarrinho, JSON.stringify(Object.values(carrinho).map(it => ({id:chaveProduto(it.produto), qtd:it.qtd}))));
+    }catch{}
+  }
 
   const cartToggle = document.getElementById('cartToggle');
   const cartOverlay = document.getElementById('cartOverlay');
@@ -1703,14 +1994,14 @@
   const cartFinalizar = document.getElementById('cartFinalizar');
 
   function adicionarAoCarrinho(produto){
-    if(carrinho[produto.nome]){
-      carrinho[produto.nome].qtd++;
+    const id = chaveProduto(produto);
+    if(carrinho[id]){
+      carrinho[id].qtd++;
     } else {
-      carrinho[produto.nome] = { produto, qtd: 1 };
+      carrinho[id] = { produto, qtd: 1 };
     }
     atualizarCarrinho();
     mostrarToast(`"${produto.nome}" adicionado ✓`);
-    abrirCarrinho();
   }
 
   function alterarQtd(nome, delta){
@@ -1726,6 +2017,7 @@
   }
 
   function atualizarCarrinho(){
+    salvarCarrinho();
     const itens = Object.values(carrinho);
     const totalQtd = itens.reduce((s, it) => s + it.qtd, 0);
     const totalValor = itens.reduce((s, it) => s + it.qtd * it.produto.preco, 0);
@@ -1745,12 +2037,12 @@
         <div class="cart-item-info">
           <p class="cart-item-nome">${it.produto.nome}</p>
           <span class="cart-item-meta">${it.produto.ml} · ${formatarPreco(it.produto.preco)}</span><br>
-          <button class="cart-remove" data-remove="${it.produto.nome}">remover</button>
+          <button class="cart-remove" data-remove="${chaveProduto(it.produto)}">remover</button>
         </div>
         <div class="cart-item-qtd">
-          <button class="cart-qtd-btn" data-menos="${it.produto.nome}">−</button>
+          <button class="cart-qtd-btn" data-menos="${chaveProduto(it.produto)}">−</button>
           ${it.qtd}
-          <button class="cart-qtd-btn" data-mais="${it.produto.nome}">+</button>
+          <button class="cart-qtd-btn" data-mais="${chaveProduto(it.produto)}">+</button>
         </div>
       </div>
     `).join('');
@@ -1790,6 +2082,7 @@
 
   // ===== WHATSAPP FLUTUANTE (dúvidas gerais) =====
   const wppFloat = document.getElementById('wppFloat');
+  document.getElementById('consultarEntrega').href = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent('Olá! Gostaria de atendimento para conhecer os perfumes e fazer um pedido.')}`;
   const msgGeral = encodeURIComponent('Olá! Tenho uma dúvida sobre os perfumes da Lavi perfumes.');
   wppFloat.href = `https://wa.me/${numeroWhatsApp}?text=${msgGeral}`;
 
@@ -1841,7 +2134,7 @@
 
     const esgotado = p.estoque === 'esgotado';
     modalAdd.disabled = esgotado;
-    modalAdd.textContent = esgotado ? 'Esgotado' : 'Adicionar';
+    modalAdd.textContent = esgotado ? 'Esgotado' : 'Adicionar ao carrinho';
     modalAdd.style.opacity = esgotado ? '0.5' : '1';
     modalAdd.style.cursor = esgotado ? 'not-allowed' : 'pointer';
 
@@ -1883,6 +2176,7 @@
   // ===== TECLA ESC FECHA MODAL / CARRINHO / MENU =====
   document.addEventListener('keydown', e => {
     if(e.key !== 'Escape') return;
+    if(!painelFiltros.hidden) fecharFiltros(true);
     fecharModal();
     fecharCarrinho();
     fecharMenu();
