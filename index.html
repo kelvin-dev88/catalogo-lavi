@@ -1039,7 +1039,7 @@
     font:10px/1.2 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     color:#493925; pointer-events:none;
   }
-  .photo-hint{left:10px} .photo-count{right:10px}
+  .photo-hint{left:10px;font-size:9px;padding:3px 6px;background:rgba(255,255,255,.35);color:rgba(73,57,37,.72);} .photo-count{right:10px}
   .modal-photo-hint{left:50%;transform:translateX(-50%);white-space:nowrap}
   .photo-arrow[hidden], .modal-photo-prev[hidden], .modal-photo-next[hidden], .photo-hint[hidden]{display:none!important}
 
@@ -1764,7 +1764,7 @@
             ${ovalLabel}
             ${fotos.length > 1 ? `<button type="button" class="photo-arrow photo-prev" data-photo-dir="-1" aria-label="Foto anterior de ${p.nome}">‹</button>
               <button type="button" class="photo-arrow photo-next" data-photo-dir="1" aria-label="Próxima foto de ${p.nome}">›</button>
-              <span class="photo-hint">Deslize para ver mais fotos</span><span class="photo-count" data-photo-count>1 / ${fotos.length}</span>` : ''}
+              <span class="photo-count" data-photo-count>1 / ${fotos.length}</span>` : ''}
           </div>
           ${tituloForaDaFoto}
           <p class="card-desc">${p.desc}</p>
