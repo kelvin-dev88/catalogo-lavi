@@ -57,3 +57,22 @@ footer{padding:31px 20px;text-align:center;border-top:1px solid rgba(166,136,100
 footer a{text-decoration:underline;text-underline-offset:4px}
 @media(max-width:760px){.header .wrap{min-height:80px}.brand img{height:62px;width:48px}.brand-text strong{font-size:20px}.brand-text small{font-size:8px}.header-nav{font-size:12px;gap:13px}.wrap{width:min(100% - 28px,520px)}.product-layout{grid-template-columns:1fr;gap:25px}.gallery{padding:13px;border-radius:18px}.breadcrumbs{padding-top:18px;padding-bottom:16px}.eyebrow{margin-top:4px}h1{margin-bottom:15px}.description{line-height:1.8}.related-grid,.all-grid{grid-template-columns:1fr;gap:11px}.related{padding-bottom:36px}.product-layout{padding-bottom:50px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button{transition:none}}
+
+/* Ajustes das páginas individuais: logo original da marca e miniaturas relacionadas. */
+.header .wrap{min-height:126px}
+.brand{gap:0;flex-shrink:0}
+.brand img{display:block;width:84px;height:113px;object-fit:contain;border-radius:5px;box-shadow:0 0 0 1px rgba(166,136,100,.11)}
+.related-item{display:flex;align-items:center;gap:14px;padding:11px 12px;min-width:0}
+.related-media{position:relative;width:88px;height:96px;flex:0 0 88px;display:flex;align-items:center;justify-content:center;border-radius:10px;overflow:hidden;background:#efe5d9}
+.related-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;background:#faf6f0}
+.related-fallback{font:500 25px/1 'Playfair Display',Georgia,serif;color:#ab9068}
+.related-info{display:block;flex:1;min-width:0}
+.related-item strong{font-size:15px;line-height:1.4;overflow-wrap:anywhere}
+.related-item small{margin-top:7px;line-height:1.5}
+@media(max-width:760px){
+  .header .wrap{min-height:106px;gap:10px}
+  .brand img{width:74px;height:100px}
+  .header-nav{gap:12px}
+  .related-item{padding:9px 10px;gap:12px}
+  .related-media{width:80px;height:88px;flex-basis:80px}
+}
