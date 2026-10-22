@@ -1,0 +1,33 @@
+LAVI PERFUMES — PÁGINAS INDIVIDUAIS E SEO
+
+O arquivo ZIP contém apenas arquivos novos/alterados para o seu site atual.
+NÃO exclua a pasta fotos/ nem o arquivo CNAME que já existem na pasta do GitHub.
+
+COMO PUBLICAR:
+1. Extraia todo o conteúdo deste ZIP dentro da sua pasta "catalogo lavi".
+   Confirme que a pasta "perfumes" e a pasta "assets" estão ao lado do index.html.
+2. Mantenha a pasta fotos/ original sem alterações.
+3. Abra o Git Bash na pasta "catalogo lavi" e execute:
+   git add .
+   git commit -m "Cria paginas individuais e SEO dos perfumes"
+   git push
+4. Confirme: https://laviperfumes.com.br/perfumes/
+5. Confirme: https://laviperfumes.com.br/sitemap.xml
+6. No Search Console, abra o sitemap já cadastrado e veja a nova leitura.
+   Caso necessário, informe novamente o endereço sitemap.xml.
+
+O QUE MUDOU:
+- 90 páginas individuais (95 registros = 90 produtos/volumes únicos).
+- Página que lista todos os produtos, com links rastreáveis.
+- Cada página tem título, descrição, canonical e dados estruturados Product.
+- Botão de compra por WhatsApp e "Adicionar ao carrinho" integrado ao catálogo.
+- O catálogo conserva o visual, as categorias, o vídeo, a logo, o modal e os preços.
+- O modal recebeu um link discreto para a página completa do perfume.
+- sitemap.xml foi atualizado para 92 URLs (home, índice e 90 produtos).
+
+ATENÇÃO:
+- As páginas usam as fotos existentes dentro de fotos/; não foram incluídas no ZIP.
+- Se um produto mudar de preço, foto, descrição ou estoque no futuro, sua
+  página individual também deverá ser atualizada para manter as informações
+  coerentes, assim como o sitemap quando surgirem/removerem páginas.
+- O Google pode levar dias ou semanas para descobrir/indexar as novas URLs.
